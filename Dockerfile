@@ -5,6 +5,8 @@ WORKDIR /src
 
 COPY . .
 
+RUN go test ./...
+
 RUN go mod download && \
     go mod tidy && \
     go mod verify

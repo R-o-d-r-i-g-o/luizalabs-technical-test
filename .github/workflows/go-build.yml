@@ -34,7 +34,7 @@ jobs:
           golint -set_exit_status ./...
 
       # smoke test:
-      - name: Build Image
+      - name: Run Build
         run: |
           docker build -t luizalabs-technical-test .
           docker images
