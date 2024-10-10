@@ -1,5 +1,3 @@
-# [Ticket Number](TICKET_URL)
-
 ## Description
 
 Summarize the changes, motivation, and the issue resolved. List any relevant dependencies:
