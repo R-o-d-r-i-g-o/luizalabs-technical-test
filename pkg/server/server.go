@@ -1,39 +1,41 @@
 package server
 
 import (
-    "github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
 )
 
 // Server interface defines the methods required for a server.
 type Server interface {
-    Run(addr string) error
-    SetupRoutes(registerHandlers func(*gin.Engine))
+	Run(addr string) error
+	SetupHandlers(handlers ...func(*gin.Engine))
 	SetupMiddleware(middleware ...gin.HandlerFunc)
 }
 
 // server struct implements the Server interface.
 type server struct {
-    router *gin.Engine
+	router *gin.Engine
 }
 
 // NewServer creates a new instance of the Gin server.
 func NewServer() Server {
-    return &server{router: gin.Default()}
+	return &server{router: gin.Default()}
 }
 
 // Run starts the server on the specified address.
 func (s *server) Run(addr string) error {
-    return s.router.Run(addr)
-}
-
-// SetupRoutes sets up the server routes.
-func (s *server) SetupRoutes(registerHandlers func(*gin.Engine)) {
-    registerHandlers(s.router)
+	return s.router.Run(addr)
 }
 
 // SetupMiddleware sets up middleware for the router.
 func (s *server) SetupMiddleware(middleware ...gin.HandlerFunc) {
-    for _, mw := range middleware {
-        s.router.Use(mw)
-    }
+	for _, mw := range middleware {
+		s.router.Use(mw)
+	}
+}
+
+// SetupHandlers registers multiple hander setup functions in the server.
+func (s *server) SetupHandlers(handlers ...func(*gin.Engine)) {
+	for _, route := range handlers {
+		route(s.router)
+	}
 }
