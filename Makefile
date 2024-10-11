@@ -37,16 +37,30 @@ clean:
 	$(GO) clean
 	rm -f $(COVERAGE_OUT) $(COVERAGE_HTML)
 
+.PHONY: install-swagger-cli
+install-swagger-cli:
+	@echo "Running install swagger..."
+	@go install github.com/swaggo/swag/cmd/swag@latest
+
+.PHONY: refresh-swagger
+refresh-swagger:
+	@echo "Running swagger lint..."
+	@swag fmt
+	@echo "Running swagger docs..."
+	@swag init -q -g cmd/main.go
+
 .PHONY: help
 help:
 	@echo "Makefile commands:"
-	@echo "  all       - Install dependencies"
-	@echo "  install   - Install Go dependencies"
-	@echo "  run       - Run the application"
-	@echo "  build     - Build the application"
-	@echo "  test      - Run tests with coverage"
-	@echo "  clean     - Clean up build files"
-	@echo "  help      - Show this help message"
+	@echo "  all                  - Install dependencies"
+	@echo "  install              - Install Go dependencies"
+	@echo "  run                  - Run the application"
+	@echo "  build                - Build the application"
+	@echo "  test                 - Run tests with coverage"
+	@echo "  clean                - Clean up build files"
+	@echo "  help                 - Show this help message"
+	@echo "  install-swagger-cli  - Install swagger cli globally"
+	@echo "  refresh-swagger      - Refresh swagger docs"
 	@echo "\nall install run build test clean help"
 
 

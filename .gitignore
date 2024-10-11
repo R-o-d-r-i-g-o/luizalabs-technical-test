@@ -18,6 +18,10 @@
 vendor/
 bin/
 
+# Swagger documentation files generated automatically.
+docs/*.json
+docs/*.yaml
+
 # Go workspace file
 go.work
 go.work.sum

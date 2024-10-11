@@ -3,6 +3,7 @@ package deps
 import (
 	"luizalabs-technical-test/internal/features/cep"
 	"luizalabs-technical-test/internal/features/health"
+	"luizalabs-technical-test/internal/features/swagger"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,7 +17,11 @@ func LoadDependencies() []func(*gin.Engine) {
 	// health feature
 	healthHandler := health.NewHandler()
 
+	// swagger feature
+	swaggerHandler := swagger.NewHandler()
+
 	return []func(*gin.Engine){
+		swaggerHandler.Register,
 		healthHandler.Register,
 		cepHandler.Register,
 	}
