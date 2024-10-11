@@ -18,7 +18,8 @@ func NewHandler() Handler {
 
 // Register sets up the "/ping" route to handle health check requests.
 func (h *handler) Register(r *gin.Engine) {
-	r.GET("/ping", h.health)
+	g := r.Group("/health")
+	g.GET("/ping", h.health)
 }
 
 // health handles the health check request, responding with a "pong" message.
