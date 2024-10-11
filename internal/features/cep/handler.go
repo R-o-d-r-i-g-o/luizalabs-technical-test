@@ -2,6 +2,7 @@ package cep
 
 import (
 	"luizalabs-technical-test/pkg/server"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,7 +25,7 @@ func (h *handler) Register(r *gin.Engine) {
 
 // getCep handles the request to retrieve CEP information.
 func (h *handler) getCep(c *gin.Context) {
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"cep":   "cep",
 		"city":  "Example City",
 		"state": "Example State",

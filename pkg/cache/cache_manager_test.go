@@ -17,9 +17,11 @@ func (suite *CacheSuite) SetupTest() {
 }
 
 func (suite *CacheSuite) TestSetAndGet() {
-	key := "testKey"
-	data := "testData"
-	expiration := 2 * time.Second
+	const (
+		key        = "testKey"
+		data       = "testData"
+		expiration = 2 * time.Second
+	)
 
 	suite.cacheManager.Set(key, data, expiration)
 
@@ -30,9 +32,11 @@ func (suite *CacheSuite) TestSetAndGet() {
 }
 
 func (suite *CacheSuite) TestExpiredEntryNotReturned() {
-	key := "testKey"
-	data := "testData"
-	expiration := 1 * time.Second
+	const (
+		key        = "testKey"
+		data       = "testData"
+		expiration = 1 * time.Second
+	)
 
 	suite.cacheManager.Set(key, data, expiration)
 

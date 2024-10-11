@@ -6,7 +6,6 @@ import (
 )
 
 var (
-	// globalCacheManager is a singleton instance of the CacheManager
 	globalCacheManager CacheManager
 	once               sync.Once
 )
@@ -23,11 +22,13 @@ func GetGlobalCacheManager() CacheManager {
 	return globalCacheManager
 }
 
+// CacheManager defines the interface for cache management operations.
 type CacheManager interface {
 	Get(key string) (interface{}, bool)
 	Set(key string, data interface{}, expiration time.Duration)
 }
 
+// cacheEntry represents a single entry in the cache.
 type cacheEntry struct {
 	Data       interface{}
 	Expiration time.Time
@@ -69,7 +70,6 @@ func (c *cacheManager) Get(key string) (interface{}, bool) {
 
 	entry, found := c.cache[key]
 	if !found || time.Now().After(entry.Expiration) {
-		// Entry not found or has expired
 		return nil, false
 	}
 

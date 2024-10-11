@@ -2,6 +2,7 @@ package health
 
 import (
 	"luizalabs-technical-test/pkg/server"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,7 +24,7 @@ func (h *handler) Register(r *gin.Engine) {
 
 // health handles the health check request, responding with a "pong" message.
 func (h *handler) health(c *gin.Context) {
-	c.JSON(200, HealthResponse{
+	c.JSON(http.StatusOK, HealthResponse{
 		Message: "pong",
 	})
 }
