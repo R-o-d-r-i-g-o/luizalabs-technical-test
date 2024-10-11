@@ -1,5 +1,5 @@
 # Build stage
-FROM golang:1.21-alpine AS build
+FROM golang:1.23-alpine AS build
 
 WORKDIR /src
 
@@ -11,7 +11,7 @@ RUN go mod download && \
     go mod tidy && \
     go mod verify
 
-RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /go/bin/luizalabs-technical-test .
+RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /go/bin/luizalabs-technical-test ./cmd
 
 # Publish stage
 FROM scratch AS publish
