@@ -1,18 +1,17 @@
 package health
 
-import "github.com/gin-gonic/gin"
+import (
+	"luizalabs-technical-test/pkg/server"
 
-// Handler interface defines a contract for registering routes.
-type Handler interface {
-	Register(r *gin.Engine)
-}
+	"github.com/gin-gonic/gin"
+)
 
 // handler struct is an empty implementation of the Handler interface.
 type handler struct {
 }
 
 // NewHandler creates and returns a new handler instance.
-func NewHandler() Handler {
+func NewHandler() server.HandlerImp {
 	return &handler{}
 }
 

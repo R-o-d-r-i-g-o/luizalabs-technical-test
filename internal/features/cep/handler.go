@@ -1,11 +1,10 @@
 package cep
 
-import "github.com/gin-gonic/gin"
+import (
+	"luizalabs-technical-test/pkg/server"
 
-// Handler interface defines the method required to register routes for the CEP feature.
-type Handler interface {
-	Register(r *gin.Engine)
-}
+	"github.com/gin-gonic/gin"
+)
 
 // handler struct holds a reference to the service layer.
 type handler struct {
@@ -13,7 +12,7 @@ type handler struct {
 }
 
 // NewHandler creates and returns a new handler instance with the injected service.
-func NewHandler(svc serviceImp) Handler {
+func NewHandler(svc serviceImp) server.HandlerImp {
 	return &handler{svc}
 }
 

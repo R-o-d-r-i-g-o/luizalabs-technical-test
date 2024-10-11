@@ -4,8 +4,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Server interface defines the methods required for a server.
-type Server interface {
+// HandlerImp interface defines a contract for registering routes.
+type HandlerImp interface {
+	Register(r *gin.Engine)
+}
+
+// ServerImp interface defines the methods required for a server.
+type ServerImp interface {
 	Run(addr string) error
 	SetupHandlers(handlers ...func(*gin.Engine))
 	SetupMiddleware(middleware ...gin.HandlerFunc)
@@ -17,7 +22,7 @@ type server struct {
 }
 
 // NewServer creates a new instance of the Gin server.
-func NewServer() Server {
+func NewServer() ServerImp {
 	return &server{router: gin.Default()}
 }
 
