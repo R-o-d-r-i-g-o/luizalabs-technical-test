@@ -15,7 +15,12 @@
 *.out
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
+vendor/
+bin/
+
+# Swagger documentation files generated automatically.
+docs/*.json
+docs/*.yaml
 
 # Go workspace file
 go.work
