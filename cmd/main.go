@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"luizalabs-technical-test/internal/deps"
+	"luizalabs-technical-test/internal/dependencies"
 	"luizalabs-technical-test/pkg/server"
 	"luizalabs-technical-test/pkg/shutdown"
 )
@@ -21,7 +21,7 @@ func main() {
 
 	runnapp := func() {
 		srv := server.NewGinServer()
-		srv.SetupHandlers(deps.LoadDependencies()...)
+		srv.SetupHandlers("v1", dependencies.Load()...)
 
 		err := srv.Run(":8080")
 		if err != nil {

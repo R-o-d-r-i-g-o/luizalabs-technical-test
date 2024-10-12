@@ -20,7 +20,7 @@ func NewHandler() server.HandlerImp {
 	return &handler{}
 }
 
-func (h *handler) Register(r *gin.Engine) {
+func (h *handler) Register(r *gin.RouterGroup) {
 	g := r.Group("/docs")
 	g.GET("/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	g.GET("", h.redirectToDocPage)

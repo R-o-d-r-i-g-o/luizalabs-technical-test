@@ -17,12 +17,18 @@ func NewHandler() server.HandlerImp {
 }
 
 // Register sets up the "/ping" route to handle health check requests.
-func (h *handler) Register(r *gin.Engine) {
+func (h *handler) Register(r *gin.RouterGroup) {
 	g := r.Group("/health")
 	g.GET("/ping", h.health)
 }
 
 // health handles the health check request, responding with a "pong" message.
+//
+//	@Summary		Health check
+//	@Description	Responds with a "pong" message to indicate that the service is healthy.
+//	@Produce		json
+//	@Success		200	{object}	healthResponse
+//	@Router			/v1/health/ping [get]
 func (h *handler) health(c *gin.Context) {
 	c.JSON(http.StatusOK, healthResponse{
 		Message: "pong",

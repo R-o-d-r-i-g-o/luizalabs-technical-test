@@ -18,7 +18,7 @@ func NewHandler(svc ServiceImp) server.HandlerImp {
 }
 
 // Register sets up the route for retrieving CEP information.
-func (h *handler) Register(r *gin.Engine) {
+func (h *handler) Register(r *gin.RouterGroup) {
 	g := r.Group("/cep")
 	g.GET("/:cep", h.getCep)
 }

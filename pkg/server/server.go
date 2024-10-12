@@ -6,13 +6,13 @@ import (
 
 // HandlerImp interface defines a contract for registering routes.
 type HandlerImp interface {
-	Register(r *gin.Engine)
+	Register(g *gin.RouterGroup)
 }
 
 // GinServerImp interface defines the methods required for a server.
 type GinServerImp interface {
 	Run(addr string) error
-	SetupHandlers(handlers ...func(*gin.Engine))
+	SetupHandlers(version string, handlers ...func(*gin.RouterGroup))
 	SetupMiddleware(middleware ...gin.HandlerFunc)
 }
 
@@ -39,8 +39,10 @@ func (s *ginServer) SetupMiddleware(middleware ...gin.HandlerFunc) {
 }
 
 // SetupHandlers registers multiple hander setup functions in the server.
-func (s *ginServer) SetupHandlers(handlers ...func(*gin.Engine)) {
+func (s *ginServer) SetupHandlers(version string, handlers ...func(*gin.RouterGroup)) {
+	apiVersioning := s.router.Group("/" + version)
+
 	for _, route := range handlers {
-		route(s.router)
+		route(apiVersioning)
 	}
 }

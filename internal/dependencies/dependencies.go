@@ -1,4 +1,4 @@
-package deps
+package dependencies
 
 import (
 	"luizalabs-technical-test/internal/features/cep"
@@ -8,8 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// LoadDependencies sets up and returns a list of handler registration functions
-func LoadDependencies() []func(*gin.Engine) {
+// Load sets up and returns a list of handler registration functions
+func Load() []func(*gin.RouterGroup) {
 	// cep feature
 	cepRep := cep.NewRepository()
 	cepSrv := cep.NewService(cepRep)
@@ -21,7 +21,7 @@ func LoadDependencies() []func(*gin.Engine) {
 	// swagger feature
 	swaggerHandler := swagger.NewHandler()
 
-	return []func(*gin.Engine){
+	return []func(*gin.RouterGroup){
 		swaggerHandler.Register,
 		healthHandler.Register,
 		cepHandler.Register,
