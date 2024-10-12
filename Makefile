@@ -49,6 +49,10 @@ refresh-swagger:
 	@echo "Running swagger docs..."
 	@swag init -q -g cmd/main.go
 
+.PHONY: run-kubernets
+run-kubernets:
+	@kubectl apply -f ./infra/k8s/
+
 .PHONY: help
 help:
 	@echo "Makefile commands:"
