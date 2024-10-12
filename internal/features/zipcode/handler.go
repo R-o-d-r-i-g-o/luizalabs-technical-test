@@ -36,12 +36,12 @@ func (h *handler) getAddressByZipCode(c *gin.Context) {
 	zipCode = common.StripNonNumericCharacters(zipCode)
 
 	if isAccepted := common.ValidateZipCode(zipCode); !isAccepted {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "wrong format provided"})
+		c.JSON(http.StatusBadRequest, server.APIErrorResponse{Error: ErrZipCodeNotFormatted.Error()})
 		return
 	}
 
 	for {
-		response, _ := h.svc.GetAddressByZipCode(zipCode)
+		response, err := h.svc.GetAddressByZipCode(zipCode)
 		if response != nil {
 			c.JSON(http.StatusOK, response)
 			break
@@ -49,7 +49,8 @@ func (h *handler) getAddressByZipCode(c *gin.Context) {
 
 		zipCode = common.AdjustLastNonZeroDigit(zipCode)
 		if zipCode == common.EmptyZipCodeValue {
-			c.JSON(http.StatusNotFound, gin.H{"error": "zip code not found"})
+			c.JSON(http.StatusNotFound, server.APIErrorResponse{Error: err.Error()})
+			// TODO: log Error here.
 			break
 		}
 	}

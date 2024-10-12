@@ -1,8 +1,6 @@
 package zipcode
 
 import (
-	"errors"
-	"fmt"
 	"time"
 )
 
@@ -38,7 +36,8 @@ func (s *service) GetAddressByZipCode(zipCode string) (*GetAddressByZipCodeRespo
 		go func(call func(string) (*GetAddressByZipCodeUnifiedResponse, error)) {
 			response, err := call(zipCode)
 			if err != nil {
-				fmt.Printf("Error calling API: %v\n", err)
+				// Note: Do not return in cases of instability or errors, to avoid stopping the request flow.
+				ErrZipCodeNotFound.WithErr(err)
 				return
 			}
 			responseChan <- response
@@ -49,7 +48,7 @@ func (s *service) GetAddressByZipCode(zipCode string) (*GetAddressByZipCodeRespo
 	case apiSuccessfulResponse := <-responseChan:
 		res := apiSuccessfulResponse.ToGetAddressByZipCodeResponse()
 		return &res, nil
-	case <-time.After(5 * time.Second):
-		return nil, errors.New("timeout waiting for address retrieval")
+	case <-time.After(2 * time.Second):
+		return nil, ErrTimeoutOperation.WithStrErr("timeout waiting for address retrieval")
 	}
 }

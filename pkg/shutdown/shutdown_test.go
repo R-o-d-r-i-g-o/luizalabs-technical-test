@@ -29,7 +29,6 @@ func (m *MockCleanup) Call() {
 	m.Called()
 }
 
-// TestSuite struct
 type ShutdownTestSuite struct {
 	suite.Suite
 	mockApp     *MockApp
@@ -42,20 +41,18 @@ func (suite *ShutdownTestSuite) SetupTest() {
 	suite.mockCleanup = new(MockCleanup)
 }
 
-// TestNow checks if Now function panics as expected.
 func (suite *ShutdownTestSuite) TestNow() {
-	// ARRANGE & ASSERT
+	// ARRANGE & ACT & ASSERT
 	defer func() {
 		err := recover()
 		assert.NotNil(suite.T(), err)
 	}()
 
-	// ACT
 	Now()
 }
 
-// TestGracefully checks the graceful shutdown process.
 func (suite *ShutdownTestSuite) TestGracefully() {
+	// ARRANGE & ACT
 	suite.mockApp.On("Call")
 	suite.mockCleanup.On("Call")
 
@@ -72,11 +69,10 @@ func (suite *ShutdownTestSuite) TestGracefully() {
 	// Wait a moment to ensure the cleanup is called
 	time.Sleep(100 * time.Millisecond)
 
-	// Assert
+	// ASSERT
 	suite.mockCleanup.AssertExpectations(suite.T())
 }
 
-// Run the test suite
 func TestShutdownTestSuite(t *testing.T) {
 	suite.Run(t, new(ShutdownTestSuite))
 }
