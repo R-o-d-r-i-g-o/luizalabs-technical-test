@@ -6,9 +6,9 @@ import (
 	"syscall"
 )
 
-// Now terminates the application immediately with an exit code of 1.
+// Now terminates the application immediately, allowing for potential recovery actions.
 func Now() {
-	os.Exit(1)
+	panic("program has being terminated.")
 }
 
 // Gracefully waits for termination signals and calls the cleanup function.
