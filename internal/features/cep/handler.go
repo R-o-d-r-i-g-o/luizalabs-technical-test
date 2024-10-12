@@ -25,9 +25,15 @@ func (h *handler) Register(r *gin.RouterGroup) {
 
 // getCep handles the request to retrieve CEP information.
 func (h *handler) getCep(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"cep":   "cep",
-		"city":  "Example City",
-		"state": "Example State",
-	})
+	zipCode := c.Param("cep")
+
+	// validation logic
+
+	response, err := h.svc.GetAddressByZipCode(zipCode)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, response)
 }
