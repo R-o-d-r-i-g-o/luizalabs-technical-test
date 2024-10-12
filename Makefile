@@ -40,7 +40,7 @@ clean:
 .PHONY: install-swagger-cli
 install-swagger-cli:
 	@echo "Running install swagger..."
-	@go install github.com/swaggo/swag/cmd/swag@latest
+	$(GO) install github.com/swaggo/swag/cmd/swag@latest
 
 .PHONY: refresh-swagger
 refresh-swagger:
@@ -48,6 +48,10 @@ refresh-swagger:
 	@swag fmt
 	@echo "Running swagger docs..."
 	@swag init -q -g cmd/main.go
+
+.PHONY: run-kubernets
+run-kubernets:
+	@kubectl apply -f ./infra/k8s/
 
 .PHONY: help
 help:
@@ -61,6 +65,7 @@ help:
 	@echo "  help                 - Show this help message"
 	@echo "  install-swagger-cli  - Install swagger cli globally"
 	@echo "  refresh-swagger      - Refresh swagger docs"
+	@echo "  run-kubernets        - Deploy kubernets infraestructure"
 	@echo "\nall install run build test clean help"
 
 

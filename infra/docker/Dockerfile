@@ -5,6 +5,10 @@ WORKDIR /src
 
 COPY . .
 
+RUN apk add --no-cache make && \
+    make install-swagger-cli && \
+    make refresh-swagger
+
 RUN go test ./...
 
 RUN go mod download && \

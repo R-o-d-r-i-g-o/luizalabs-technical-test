@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: luizalabs-deployment
+  namespace: luizalabs
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: luizalabs-deployment
+  template:
+    metadata:
+      labels:
+        app: luizalabs-deployment
+    spec:
+      containers:
+        - name: luizalabs-container
+          image: rodrigomarq/luizalabs-technical-test:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "256Mi"
+            limits:
+              cpu: "1"
+              memory: "512Mi"
