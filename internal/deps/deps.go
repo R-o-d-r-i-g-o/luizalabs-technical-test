@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// LoadDependencies sets up and returns a list of handler registration functions
 func LoadDependencies() []func(*gin.Engine) {
 	// cep feature
 	cepRep := cep.NewRepository()

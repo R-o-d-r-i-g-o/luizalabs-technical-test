@@ -9,11 +9,11 @@ import (
 
 // handler struct holds a reference to the service layer.
 type handler struct {
-	svc serviceImp
+	svc ServiceImp
 }
 
 // NewHandler creates and returns a new handler instance with the injected service.
-func NewHandler(svc serviceImp) server.HandlerImp {
+func NewHandler(svc ServiceImp) server.HandlerImp {
 	return &handler{svc}
 }
 

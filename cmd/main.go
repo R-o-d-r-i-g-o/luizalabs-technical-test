@@ -20,7 +20,7 @@ func main() {
 	}
 
 	runnapp := func() {
-		srv := server.NewServer()
+		srv := server.NewGinServer()
 		srv.SetupHandlers(deps.LoadDependencies()...)
 
 		err := srv.Run(":8080")

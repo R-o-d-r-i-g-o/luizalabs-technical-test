@@ -2,9 +2,9 @@ package cep
 
 import "errors"
 
-// repositoryImp defines the interface for the repository layer,
+// RepositoryImp defines the interface for the repository layer,
 // which abstracts data access operations.
-type repositoryImp interface {
+type RepositoryImp interface {
 	RetrieveCep() error
 }
 
@@ -14,7 +14,7 @@ type repository struct {
 }
 
 // NewRepository creates and returns a new instance of the repository.
-func NewRepository() repositoryImp {
+func NewRepository() RepositoryImp {
 	return &repository{}
 }
 

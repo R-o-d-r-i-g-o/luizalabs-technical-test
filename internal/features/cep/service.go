@@ -2,18 +2,18 @@ package cep
 
 import "errors"
 
-// serviceImp defines the interface for the service layer, with a method to retrieve a CEP.
-type serviceImp interface {
+// ServiceImp defines the interface for the service layer, with a method to retrieve a CEP.
+type ServiceImp interface {
 	RetrieveCep() error
 }
 
 // service struct implements the serviceImp interface and holds a reference to the repository.
 type service struct {
-	repository repositoryImp
+	repository RepositoryImp
 }
 
 // NewService creates and returns a new service instance, injecting the repository dependency.
-func NewService(repository repositoryImp) serviceImp {
+func NewService(repository RepositoryImp) ServiceImp {
 	return &service{repository}
 }
 

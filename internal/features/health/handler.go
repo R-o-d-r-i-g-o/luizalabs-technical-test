@@ -24,7 +24,7 @@ func (h *handler) Register(r *gin.Engine) {
 
 // health handles the health check request, responding with a "pong" message.
 func (h *handler) health(c *gin.Context) {
-	c.JSON(http.StatusOK, HealthResponse{
+	c.JSON(http.StatusOK, healthResponse{
 		Message: "pong",
 	})
 }

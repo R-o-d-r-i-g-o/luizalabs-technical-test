@@ -9,11 +9,11 @@ import (
 
 type CacheSuite struct {
 	suite.Suite
-	cacheManager CacheManager
+	cacheManager Manager
 }
 
 func (suite *CacheSuite) SetupTest() {
-	suite.cacheManager = NewCacheManager(1 * time.Second)
+	suite.cacheManager = NewManager(1 * time.Second)
 }
 
 func (suite *CacheSuite) TestSetAndGet() {

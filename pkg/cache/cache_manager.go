@@ -6,45 +6,45 @@ import (
 )
 
 var (
-	globalCacheManager CacheManager
+	globalCacheManager Manager
 	once               sync.Once
 )
 
 // InitializeCacheManager initializes the global cache manager with the specified cleanup interval
 func InitializeCacheManager(cleanupInterval time.Duration) {
 	once.Do(func() {
-		globalCacheManager = NewCacheManager(cleanupInterval)
+		globalCacheManager = NewManager(cleanupInterval)
 	})
 }
 
 // GetGlobalCacheManager returns the initialized global cache manager
-func GetGlobalCacheManager() CacheManager {
+func GetGlobalCacheManager() Manager {
 	return globalCacheManager
 }
 
-// CacheManager defines the interface for cache management operations.
-type CacheManager interface {
+// Manager defines the interface for cache management operations.
+type Manager interface {
 	Get(key string) (interface{}, bool)
 	Set(key string, data interface{}, expiration time.Duration)
 }
 
-// cacheEntry represents a single entry in the cache.
-type cacheEntry struct {
+// entry represents a single entry in the cache.
+type entry struct {
 	Data       interface{}
 	Expiration time.Time
 }
 
-// cacheManager is responsible for managing the cache
-type cacheManager struct {
-	cache  map[string]cacheEntry
+// manager is responsible for managing the cache
+type manager struct {
+	cache  map[string]entry
 	mutex  *sync.RWMutex
 	ticker *time.Ticker
 }
 
-// NewCacheManager creates a new CacheManager with the specified cleanup interval
-func NewCacheManager(cleanupInterval time.Duration) CacheManager {
-	cacheManager := &cacheManager{
-		cache:  make(map[string]cacheEntry),
+// NewManager creates a new CacheManager with the specified cleanup interval
+func NewManager(cleanupInterval time.Duration) Manager {
+	cacheManager := &manager{
+		cache:  make(map[string]entry),
 		mutex:  &sync.RWMutex{},
 		ticker: time.NewTicker(cleanupInterval),
 	}
@@ -55,16 +55,16 @@ func NewCacheManager(cleanupInterval time.Duration) CacheManager {
 }
 
 // Set adds a new entry to the cache with the specified key, data, and expiration time
-func (c *cacheManager) Set(key string, data interface{}, expiration time.Duration) {
+func (c *manager) Set(key string, data interface{}, expiration time.Duration) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 
 	expirationTime := time.Now().Add(expiration)
-	c.cache[key] = cacheEntry{Data: data, Expiration: expirationTime}
+	c.cache[key] = entry{Data: data, Expiration: expirationTime}
 }
 
 // Get retrieves the cached data associated with the specified key
-func (c *cacheManager) Get(key string) (interface{}, bool) {
+func (c *manager) Get(key string) (interface{}, bool) {
 	c.mutex.RLock()
 	defer c.mutex.RUnlock()
 
@@ -77,14 +77,14 @@ func (c *cacheManager) Get(key string) (interface{}, bool) {
 }
 
 // startCleanupRoutine periodically cleans up expired entries from the cache
-func (c *cacheManager) startCleanupRoutine() {
+func (c *manager) startCleanupRoutine() {
 	for range c.ticker.C {
 		c.cleanupExpiredEntries()
 	}
 }
 
 // cleanupExpiredEntries removes entries from the cache that have expired
-func (c *cacheManager) cleanupExpiredEntries() {
+func (c *manager) cleanupExpiredEntries() {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 
