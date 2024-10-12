@@ -7,12 +7,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// HandlerImp defines the interface for handling server operations.
+// It embeds the server.HandlerImp interface, allowing for extended functionality and custom implementations.
+type HandlerImp interface {
+	server.HandlerImp
+}
+
 // handler struct is an empty implementation of the Handler interface.
 type handler struct {
 }
 
 // NewHandler creates and returns a new handler instance.
-func NewHandler() server.HandlerImp {
+func NewHandler() HandlerImp {
 	return &handler{}
 }
 

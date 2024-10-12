@@ -49,6 +49,25 @@ refresh-swagger:
 	@echo "Running swagger docs..."
 	@swag init -q -g cmd/main.go
 
+.PHONY: install-mock-cli
+install-mock-cli:
+	@echo "Installing mock cli..."
+	@go install github.com/golang/mock/mockgen
+
+.PHONY: run-mock
+run-mock:
+	@echo "Creating mock files for zipcode use-case..."
+	@mockgen -source="internal/features/zipcode/repository.go" -destination="internal/features/zipcode/mock/repository.go" -package="mock"
+	@mockgen -source="internal/features/zipcode/service.go"    -destination="internal/features/zipcode/mock/service.go"    -package="mock"
+	@mockgen -source="internal/features/zipcode/handler.go"    -destination="internal/features/zipcode/mock/handler.go"    -package="mock"
+
+	@echo "Creating mock files for swagger use-case..."
+	@mockgen -source="internal/features/swagger/handler.go"    -destination="internal/features/swagger/mock/handler.go"    -package="mock"
+
+	@echo "Creating mock files for health use-case..."
+	@mockgen -source="internal/features/health/handler.go"     -destination="internal/features/health/mock/handler.go"     -package="mock"
+
+
 .PHONY: run-kubernets
 run-kubernets:
 	@kubectl apply -f ./infra/k8s/
@@ -66,6 +85,8 @@ help:
 	@echo "  install-swagger-cli  - Install swagger cli globally"
 	@echo "  refresh-swagger      - Refresh swagger docs"
 	@echo "  run-kubernets        - Deploy kubernets infraestructure"
+	@echo "  install-mock-cli     - Install mockgen cli globally"
+	@echo "  run-mock             - Generate/Upgrade mock files automatically"
 	@echo "\nall install run build test clean help"
 
 
