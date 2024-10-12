@@ -1,4 +1,4 @@
-package cep
+package zipcode
 
 import (
 	"luizalabs-technical-test/pkg/server"

@@ -1,4 +1,4 @@
-package cep
+package zipcode
 
 import "github.com/go-playground/validator/v10"
 
