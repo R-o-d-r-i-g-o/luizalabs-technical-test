@@ -28,7 +28,7 @@ func (s *service) GetAddressByZipCode(zipCode string) (*GetAddressByZipCodeRespo
 	responseChan := make(chan *GetAddressByZipCodeUnifiedResponse, 1)
 
 	apiCalls := []func(zipCode string) (*GetAddressByZipCodeUnifiedResponse, error){
-		s.repository.GetAddressByZipCodeApiCep,
+		s.repository.GetAddressByZipCodeAPICep,
 		s.repository.GetAddressByZipCodeBrasilAPI,
 		s.repository.GetAddressByZipCodeOpenCep,
 		s.repository.GetAddressByZipCodeViaCep,

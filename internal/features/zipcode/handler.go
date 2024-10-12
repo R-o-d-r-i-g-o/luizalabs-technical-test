@@ -1,6 +1,7 @@
 package zipcode
 
 import (
+	"luizalabs-technical-test/internal/common"
 	"luizalabs-technical-test/pkg/server"
 	"net/http"
 
@@ -19,21 +20,31 @@ func NewHandler(svc ServiceImp) server.HandlerImp {
 
 // Register sets up the route for retrieving CEP information.
 func (h *handler) Register(r *gin.RouterGroup) {
-	g := r.Group("/cep")
-	g.GET("/:cep", h.getCep)
+	g := r.Group("/zip-code")
+	g.GET("/:zip-code", h.getAddressByZipCode)
 }
 
-// getCep handles the request to retrieve CEP information.
-func (h *handler) getCep(c *gin.Context) {
-	zipCode := c.Param("cep")
+// getAddressByZipCode handles the request to retrieve CEP information.
+func (h *handler) getAddressByZipCode(c *gin.Context) {
+	zipCode := c.Param("zip-code")
+	zipCode = common.StripNonNumericCharacters(zipCode)
 
-	// validation logic
-
-	response, err := h.svc.GetAddressByZipCode(zipCode)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	if isAccepted := common.ValidateZipCode(zipCode); !isAccepted {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "wrong format provided"})
 		return
 	}
 
-	c.JSON(http.StatusOK, response)
+	for {
+		response, _ := h.svc.GetAddressByZipCode(zipCode)
+		if response != nil {
+			c.JSON(http.StatusOK, response)
+			break
+		}
+
+		zipCode = common.AdjustLastNonZeroDigit(zipCode)
+		if zipCode == common.EmptyZipCodeValue {
+			c.JSON(http.StatusNotFound, gin.H{"error": "zip code not found"})
+			break
+		}
+	}
 }

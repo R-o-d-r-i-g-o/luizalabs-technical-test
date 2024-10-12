@@ -5,13 +5,15 @@ import (
 	"luizalabs-technical-test/pkg/http"
 )
 
-// DO NOT SIMPLIFY THIS FILE. IT NEEDS TO HAVE A UNIQUE CALLIN' FOR EACH ROUTE AS IT SERVES AS AN ABSTRACTION LAYER, AS UNCLE BOB STATED IN HIS BOOK "Clean Architecture".
-// AS A RESULT, THIS UNIFIES RESPONSES INTO AN INTERNAL DTO USED IN OTHER LAYERS OF THE PROJECT.
+/*
+ * DO NOT SIMPLIFY THIS FILE. IT NEEDS TO HAVE A UNIQUE CALLIN' FOR EACH ROUTE AS IT SERVES AS AN ABSTRACTION LAYER, AS UNCLE BOB STATED IN HIS BOOK "Clean Architecture".
+ * AS A RESULT, THIS UNIFIES RESPONSES INTO AN INTERNAL DTO USED IN OTHER LAYERS OF THE PROJECT.
+ */
 
 // RepositoryImp defines the interface for the repository layer,
 // which abstracts data access operations.
 type RepositoryImp interface {
-	GetAddressByZipCodeApiCep(zipCode string) (*GetAddressByZipCodeUnifiedResponse, error)
+	GetAddressByZipCodeAPICep(zipCode string) (*GetAddressByZipCodeUnifiedResponse, error)
 	GetAddressByZipCodeViaCep(zipCode string) (*GetAddressByZipCodeUnifiedResponse, error)
 	GetAddressByZipCodeOpenCep(zipCode string) (*GetAddressByZipCodeUnifiedResponse, error)
 	GetAddressByZipCodeBrasilAPI(zipCode string) (*GetAddressByZipCodeUnifiedResponse, error)
@@ -64,11 +66,11 @@ func (i *repository) GetAddressByZipCodeOpenCep(zipCode string) (*GetAddressByZi
 	return data.ToGetAddressByZipCodeResponse()
 }
 
-// GetAddressByZipCodeApiCep fetches address information for a given zip code
+// GetAddressByZipCodeAPICep fetches address information for a given zip code
 // using the ApiCep API and returns it as a unified response.
-func (i *repository) GetAddressByZipCodeApiCep(zipCode string) (*GetAddressByZipCodeUnifiedResponse, error) {
+func (i *repository) GetAddressByZipCodeAPICep(zipCode string) (*GetAddressByZipCodeUnifiedResponse, error) {
 	parsedURL := fmt.Sprintf("https://cdn.apicep.com/file/apicep/%s.json", zipCode)
-	data := new(ApiCepResponse)
+	data := new(APICepResponse)
 
 	if err := i.httpClient.FetchPublicData(parsedURL, data); err != nil {
 		return nil, err

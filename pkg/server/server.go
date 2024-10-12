@@ -4,11 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// HandlerImp interface defines a contract for registering routes.
-type HandlerImp interface {
-	Register(g *gin.RouterGroup)
-}
-
 // GinServerImp interface defines the methods required for a server.
 type GinServerImp interface {
 	Run(addr string) error
