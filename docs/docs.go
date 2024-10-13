@@ -44,6 +44,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/zipcode.swagGetAddressByZipCodeResponse"
                         }
                     },
+                    "302": {
+                        "description": "Cached value retrieved",
+                        "schema": {
+                            "$ref": "#/definitions/zipcode.swagGetAddressByZipCodeResponse"
+                        }
+                    },
                     "400": {
                         "description": "Invalid ZIP code format",
                         "schema": {
