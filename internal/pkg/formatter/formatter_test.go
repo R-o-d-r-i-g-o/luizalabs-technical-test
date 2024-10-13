@@ -1,4 +1,4 @@
-package common
+package formatter
 
 import (
 	"testing"

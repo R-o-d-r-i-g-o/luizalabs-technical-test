@@ -1,7 +1,8 @@
 package zipcode
 
 import (
-	"luizalabs-technical-test/internal/common"
+	"luizalabs-technical-test/internal/pkg/formatter"
+	"luizalabs-technical-test/internal/pkg/validator"
 	"luizalabs-technical-test/pkg/server"
 	"net/http"
 
@@ -33,9 +34,9 @@ func (h *handler) Register(r *gin.RouterGroup) {
 // getAddressByZipCode handles the request to retrieve CEP information.
 func (h *handler) getAddressByZipCode(c *gin.Context) {
 	zipCode := c.Param("zip-code")
-	zipCode = common.StripNonNumericCharacters(zipCode)
+	zipCode = formatter.StripNonNumericCharacters(zipCode)
 
-	if isAccepted := common.ValidateZipCode(zipCode); !isAccepted {
+	if isAccepted := validator.ValidateZipCode(zipCode); !isAccepted {
 		c.JSON(http.StatusBadRequest, server.APIErrorResponse{Error: ErrZipCodeNotFormatted.Error()})
 		return
 	}
@@ -47,8 +48,8 @@ func (h *handler) getAddressByZipCode(c *gin.Context) {
 			break
 		}
 
-		zipCode = common.AdjustLastNonZeroDigit(zipCode)
-		if zipCode == common.EmptyZipCodeValue {
+		zipCode = formatter.AdjustLastNonZeroDigit(zipCode)
+		if zipCode == validator.EmptyZipCodeValue {
 			c.JSON(http.StatusNotFound, server.APIErrorResponse{Error: err.Error()})
 			// TODO: log Error here.
 			break
