@@ -6,9 +6,13 @@ import (
 	"luizalabs-technical-test/internal/dependencies"
 	"luizalabs-technical-test/pkg/server"
 	"luizalabs-technical-test/pkg/shutdown"
+
+	"github.com/joho/godotenv"
 )
 
-func init() {}
+func init() {
+	godotenv.Load(".env")
+}
 
 func main() {
 	cleanup := func() {
