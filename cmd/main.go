@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"luizalabs-technical-test/internal/config"
 	"luizalabs-technical-test/internal/dependencies"
 	"luizalabs-technical-test/pkg/server"
 	"luizalabs-technical-test/pkg/shutdown"
@@ -12,6 +13,7 @@ import (
 
 func init() {
 	godotenv.Load(".env")
+	config.LoadEnv()
 }
 
 func main() {

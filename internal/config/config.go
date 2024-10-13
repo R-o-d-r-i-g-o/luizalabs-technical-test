@@ -2,26 +2,31 @@ package config
 
 import "luizalabs-technical-test/pkg/env"
 
+// Variables that store server, external API, and general configuration settings
 var (
-	Server        serverConfig
-	ExternalAPI   externalAPI
-	GeneralConfig generalConfig
+	ServerEnv        serverConfig
+	ExternalAPIEnv   externalAPI
+	GeneralConfigEnv generalConfig
 )
 
+// LoadEnv loads environment variables into the configuration structures using "env" tags
 func LoadEnv() {
-	const TAG_NAME = "env"
-	env.LoadStructWithEnvVars(TAG_NAME, &Server, &ExternalAPI, &GeneralConfig)
+	const tagName = "env"
+	env.LoadStructWithEnvVars(tagName, &ServerEnv, &ExternalAPIEnv, &GeneralConfigEnv)
 }
 
+// Structure to load general configurations (e.g., authentication key)
 type generalConfig struct {
-	SECRET_AUTH_TOKEN_KEY string `env:"SECRET_AUTH_TOKEN_KEY"`
+	SecretAuthTokenKey string `env:"SECRET_AUTH_TOKEN_KEY"`
 }
 
+// Structure to load server configurations (port and host)
 type serverConfig struct {
-	PORT string `env:"SERVER_PORT"`
-	HOST string `env:"SERVER_HOST"`
+	Port string `env:"SERVER_PORT"`
+	Host string `env:"SERVER_HOST"`
 }
 
+// Structure to load the external API URL
 type externalAPI struct {
 	URL string `env:"EXTERNAL_API"`
 }

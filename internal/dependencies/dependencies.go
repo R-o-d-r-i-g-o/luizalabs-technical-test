@@ -1,7 +1,6 @@
 package dependencies
 
 import (
-	"luizalabs-technical-test/internal/config"
 	"luizalabs-technical-test/internal/features/health"
 	"luizalabs-technical-test/internal/features/swagger"
 	"luizalabs-technical-test/internal/features/zipcode"
@@ -14,7 +13,6 @@ import (
 
 // Load sets up and returns a list of handler registration functions
 func Load() []func(*gin.RouterGroup) {
-	config.LoadEnv()
 	httpClient := http.NewClient(&netHttp.Client{})
 
 	// zipcode feature

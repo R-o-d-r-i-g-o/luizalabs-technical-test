@@ -1,6 +1,9 @@
 package str
 
 const (
-	EMPTY_STRING = ""
-	EMPTY_SPACE  = " "
+	// EmptyString represents an empty string
+	EmptyString = ""
+
+	// EmptySpace represents a single space character
+	EmptySpace = " "
 )

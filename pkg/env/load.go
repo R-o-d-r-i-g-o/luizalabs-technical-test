@@ -20,13 +20,13 @@ func LoadStructWithEnvVars(tagName string, configStructures ...interface{}) {
 			environments[fieldName] = os.Getenv(envVarName)
 		}
 
-		parsed := parseMapToJson(environments)
+		parsed := parseMapToJSON(environments)
 		json.Unmarshal([]byte(parsed), configStructure)
 	}
 }
 
-// parseMapToJson converts a map to a JSON string.
-func parseMapToJson(mp map[string]string) string {
+// parseMapToJSON converts a map to a JSON string.
+func parseMapToJSON(mp map[string]string) string {
 	str, _ := json.Marshal(mp)
 	return string(str)
 }
