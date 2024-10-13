@@ -7,12 +7,18 @@ var (
 	ServerEnv        serverConfig
 	ExternalAPIEnv   externalAPI
 	GeneralConfigEnv generalConfig
+	DatabaseEnv      databaseConfig
 )
 
 // LoadEnv loads environment variables into the configuration structures using "env" tags
 func LoadEnv() {
 	const tagName = "env"
-	env.LoadStructWithEnvVars(tagName, &ServerEnv, &ExternalAPIEnv, &GeneralConfigEnv)
+	env.LoadStructWithEnvVars(tagName, &ServerEnv, &ExternalAPIEnv, &GeneralConfigEnv, &DatabaseEnv)
+}
+
+// Structure to load database configurations (connection string)
+type databaseConfig struct {
+	ConnectionString string `env:"DATABASE_CONNECTION_STRING"`
 }
 
 // Structure to load general configurations (e.g., authentication key)

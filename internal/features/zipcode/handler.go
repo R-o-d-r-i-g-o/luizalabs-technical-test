@@ -33,7 +33,7 @@ func NewHandler(svc ServiceImp, cacheMiddleware middleware.Middleware) HandlerIm
 	}
 }
 
-// Register sets up the route for retrieving CEP information.
+// Register sets up the route for retrieving ZipCode information.
 func (h *handler) Register(r *gin.RouterGroup) {
 	g := r.Group("/address")
 	g.GET("/:zip-code", h.cacheLayer.Middleware(), h.getAddressByZipCode)

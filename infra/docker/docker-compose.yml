@@ -1,6 +1,22 @@
 version: "3.5"
 
 services:
+  postgres:
+    image: "postgres:14.5-alpine"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: admin
+      PGDATA: /data/postgres
+      POSTGRES_DB: "code-space"
+    volumes:
+      - ./../.docker/postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+    networks:
+      - luiza-labs-network
+
   prometheus:
     image: prom/prometheus
     user: root

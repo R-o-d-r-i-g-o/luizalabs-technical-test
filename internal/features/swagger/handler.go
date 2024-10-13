@@ -25,6 +25,7 @@ func NewHandler() HandlerImp {
 	return &handler{}
 }
 
+// Register sets up the route for retrieving DOCs and Swagger information.
 func (h *handler) Register(r *gin.RouterGroup) {
 	g := r.Group("/docs")
 	g.GET("/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
