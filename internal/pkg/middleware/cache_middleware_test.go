@@ -26,8 +26,7 @@ func (s *CacheMiddlewareSuite) SetupSuite() {
 	// Initialize the global cache manager for testing
 	os.Setenv("SECRET_AUTH_TOKEN_KEY", "test-secret")
 	config.LoadEnv()
-	cache.InitializeCacheManager(time.Minute)
-	s.cacheManager = cache.GetGlobalCacheManager()
+	s.cacheManager = cache.NewManager(time.Minute)
 }
 
 func (s *CacheMiddlewareSuite) TestCacheMiddleware() {

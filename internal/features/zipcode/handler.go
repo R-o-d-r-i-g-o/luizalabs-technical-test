@@ -3,6 +3,7 @@ package zipcode
 import (
 	"luizalabs-technical-test/internal/pkg/formatter"
 	"luizalabs-technical-test/internal/pkg/validator"
+	"luizalabs-technical-test/pkg/middleware"
 	"luizalabs-technical-test/pkg/server"
 	"net/http"
 
@@ -20,18 +21,22 @@ type HandlerImp interface {
 
 // handler struct holds a reference to the service layer.
 type handler struct {
-	svc ServiceImp
+	svc        ServiceImp
+	cacheLayer middleware.Middleware
 }
 
 // NewHandler creates and returns a new handler instance with the injected service.
-func NewHandler(svc ServiceImp) HandlerImp {
-	return &handler{svc}
+func NewHandler(svc ServiceImp, cacheMiddleware middleware.Middleware) HandlerImp {
+	return &handler{
+		svc,
+		cacheMiddleware,
+	}
 }
 
 // Register sets up the route for retrieving CEP information.
 func (h *handler) Register(r *gin.RouterGroup) {
 	g := r.Group("/address")
-	g.GET("/:zip-code", h.getAddressByZipCode)
+	g.GET("/:zip-code", h.cacheLayer.Middleware(), h.getAddressByZipCode)
 }
 
 // getAddressByZipCode handles the request to retrieve CEP information.
@@ -43,8 +48,9 @@ func (h *handler) Register(r *gin.RouterGroup) {
 //	@Produce		json
 //	@Param			zip-code	path		string	true	"ZIP Code"
 //	@Success		200			{object}	swagGetAddressByZipCodeResponse
-//	@Failure		400			{object}	server.APIErrorResponse	"Invalid ZIP code format"
-//	@Failure		404			{object}	server.APIErrorResponse	"ZIP code not found"
+//	@Success		302			{object}	swagGetAddressByZipCodeResponse	"Cached value retrieved"
+//	@Failure		400			{object}	server.APIErrorResponse			"Invalid ZIP code format"
+//	@Failure		404			{object}	server.APIErrorResponse			"ZIP code not found"
 //	@Router			/v1/address/{zip-code} [get]
 func (h *handler) getAddressByZipCode(c *gin.Context) {
 	zipCode := c.Param("zip-code")

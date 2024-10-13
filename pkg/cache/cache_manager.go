@@ -5,23 +5,6 @@ import (
 	"time"
 )
 
-var (
-	globalCacheManager Manager
-	once               sync.Once
-)
-
-// InitializeCacheManager initializes the global cache manager with the specified cleanup interval
-func InitializeCacheManager(cleanupInterval time.Duration) {
-	once.Do(func() {
-		globalCacheManager = NewManager(cleanupInterval)
-	})
-}
-
-// GetGlobalCacheManager returns the initialized global cache manager
-func GetGlobalCacheManager() Manager {
-	return globalCacheManager
-}
-
 // Manager defines the interface for cache management operations.
 type Manager interface {
 	Get(key string) (interface{}, bool)
