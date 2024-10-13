@@ -15,6 +15,50 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/v1/address/{zip-code}": {
+            "get": {
+                "description": "Get address details using a provided ZIP code. Returns a structured response with address data or error information.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Address"
+                ],
+                "summary": "Retrieve CEP information by ZIP code",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ZIP Code",
+                        "name": "zip-code",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/zipcode.swagGetAddressByZipCodeResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ZIP code format",
+                        "schema": {
+                            "$ref": "#/definitions/server.APIErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "ZIP code not found",
+                        "schema": {
+                            "$ref": "#/definitions/server.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/health/ping": {
             "get": {
                 "description": "Responds with a \"pong\" message to indicate that the service is healthy.",
@@ -26,7 +70,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/health.healthResponse"
+                            "$ref": "#/definitions/health.swagHealthResponse"
                         }
                     }
                 }
@@ -34,13 +78,22 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "health.healthResponse": {
+        "health.swagHealthResponse": {
+            "type": "object"
+        },
+        "server.APIErrorResponse": {
             "type": "object",
             "properties": {
-                "message": {
+                "code": {
+                    "type": "string"
+                },
+                "error": {
                     "type": "string"
                 }
             }
+        },
+        "zipcode.swagGetAddressByZipCodeResponse": {
+            "type": "object"
         }
     }
 }`

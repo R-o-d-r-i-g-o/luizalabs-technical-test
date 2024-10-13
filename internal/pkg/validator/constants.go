@@ -1,4 +1,4 @@
-package common
+package validator
 
 const (
 	// MinimumZipCodeLen defines the minimum length required for a valid ZIP code.

@@ -1,6 +1,9 @@
 package zipcode
 
-import "errors"
+import (
+	"errors"
+	"luizalabs-technical-test/pkg/constants/str"
+)
 
 /*
  * AVOID USING COMPLEX VALIDATION LIBRARIES, SUCH AS "go-playground/validator" IN THE ZIPCODE CONSUMED APIS.
@@ -86,7 +89,10 @@ const APIEmptyResponseProvidedErr = "no data provided from zipcode api"
 
 // ToGetAddressByZipCodeResponse converts ViaCep structure to GetAddressByCepResponse.
 func (r *ViaCepResponse) ToGetAddressByZipCodeResponse() (*GetAddressByZipCodeUnifiedResponse, error) {
-	if r.Logradouro == "" && r.Bairro == "" && r.Localidade == "" && r.Uf == "" {
+	if r.Uf == str.EmptyString &&
+		r.Bairro == str.EmptyString &&
+		r.Logradouro == str.EmptyString &&
+		r.Localidade == str.EmptyString {
 		return nil, errors.New(APIEmptyResponseProvidedErr)
 	}
 	return &GetAddressByZipCodeUnifiedResponse{
@@ -99,7 +105,10 @@ func (r *ViaCepResponse) ToGetAddressByZipCodeResponse() (*GetAddressByZipCodeUn
 
 // ToGetAddressByZipCodeResponse converts OpenCep structure to GetAddressByCepResponse.
 func (r *OpenCepResponse) ToGetAddressByZipCodeResponse() (*GetAddressByZipCodeUnifiedResponse, error) {
-	if r.Logradouro == "" && r.Bairro == "" && r.Localidade == "" && r.Uf == "" {
+	if r.Uf == str.EmptyString &&
+		r.Bairro == str.EmptyString &&
+		r.Logradouro == str.EmptyString &&
+		r.Localidade == str.EmptyString {
 		return nil, errors.New(APIEmptyResponseProvidedErr)
 	}
 	return &GetAddressByZipCodeUnifiedResponse{
@@ -112,7 +121,10 @@ func (r *OpenCepResponse) ToGetAddressByZipCodeResponse() (*GetAddressByZipCodeU
 
 // ToGetAddressByZipCodeResponse converts BrasilApi structure to GetAddressByCepResponse.
 func (r *BrasilAPIResponse) ToGetAddressByZipCodeResponse() (*GetAddressByZipCodeUnifiedResponse, error) {
-	if r.Street == "" && r.Neighborhood == "" && r.City == "" && r.State == "" {
+	if r.City == str.EmptyString &&
+		r.State == str.EmptyString &&
+		r.Street == str.EmptyString &&
+		r.Neighborhood == str.EmptyString {
 		return nil, errors.New(APIEmptyResponseProvidedErr)
 	}
 	return &GetAddressByZipCodeUnifiedResponse{
@@ -125,7 +137,10 @@ func (r *BrasilAPIResponse) ToGetAddressByZipCodeResponse() (*GetAddressByZipCod
 
 // ToGetAddressByZipCodeResponse converts ApiCep structure to GetAddressByCepResponse.
 func (r *APICepResponse) ToGetAddressByZipCodeResponse() (*GetAddressByZipCodeUnifiedResponse, error) {
-	if r.Address == "" && r.District == "" && r.City == "" && r.State == "" {
+	if r.City == str.EmptyString &&
+		r.State == str.EmptyString &&
+		r.Address == str.EmptyString &&
+		r.District == str.EmptyString {
 		return nil, errors.New(APIEmptyResponseProvidedErr)
 	}
 	return &GetAddressByZipCodeUnifiedResponse{

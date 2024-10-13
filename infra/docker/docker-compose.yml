@@ -8,8 +8,8 @@ services:
     hostname: prometheus
     restart: unless-stopped
     volumes:
-      - ./.docker/prometheus/data:/prometheus
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./../.docker/prometheus/data:/prometheus
+      - ./../prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
