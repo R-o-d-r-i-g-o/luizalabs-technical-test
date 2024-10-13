@@ -9,6 +9,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// swagGetAddressByZipCodeResponse is used to work around Swagger's lack of support for Go generics.
+type swagGetAddressByZipCodeResponse = server.APIResponse[GetAddressByZipCodeResponse]
+
 // HandlerImp defines the interface for handling server operations.
 // It embeds the server.HandlerImp interface, allowing for extended functionality and custom implementations.
 type HandlerImp interface {
@@ -27,11 +30,22 @@ func NewHandler(svc ServiceImp) HandlerImp {
 
 // Register sets up the route for retrieving CEP information.
 func (h *handler) Register(r *gin.RouterGroup) {
-	g := r.Group("/zip-code")
+	g := r.Group("/address")
 	g.GET("/:zip-code", h.getAddressByZipCode)
 }
 
 // getAddressByZipCode handles the request to retrieve CEP information.
+//
+//	@Summary		Retrieve CEP information by ZIP code
+//	@Description	Get address details using a provided ZIP code. Returns a structured response with address data or error information.
+//	@Tags			Address
+//	@Accept			json
+//	@Produce		json
+//	@Param			zip-code	path		string	true	"ZIP Code"
+//	@Success		200			{object}	swagGetAddressByZipCodeResponse
+//	@Failure		400			{object}	server.APIErrorResponse	"Invalid ZIP code format"
+//	@Failure		404			{object}	server.APIErrorResponse	"ZIP code not found"
+//	@Router			/v1/address/{zip-code} [get]
 func (h *handler) getAddressByZipCode(c *gin.Context) {
 	zipCode := c.Param("zip-code")
 	zipCode = formatter.StripNonNumericCharacters(zipCode)
@@ -44,14 +58,14 @@ func (h *handler) getAddressByZipCode(c *gin.Context) {
 	for {
 		response, err := h.svc.GetAddressByZipCode(zipCode)
 		if response != nil {
-			c.JSON(http.StatusOK, response)
+			c.JSON(http.StatusOK, swagGetAddressByZipCodeResponse{Data: *response})
 			break
 		}
 
 		zipCode = formatter.AdjustLastNonZeroDigit(zipCode)
 		if zipCode == validator.EmptyZipCodeValue {
-			c.JSON(http.StatusNotFound, server.APIErrorResponse{Error: err.Error()})
 			// TODO: log Error here.
+			c.JSON(http.StatusNotFound, server.APIErrorResponse{Error: err.Error()})
 			break
 		}
 	}

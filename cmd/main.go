@@ -5,6 +5,7 @@ import (
 
 	"luizalabs-technical-test/internal/config"
 	"luizalabs-technical-test/internal/dependencies"
+	"luizalabs-technical-test/internal/pkg/cors"
 	"luizalabs-technical-test/pkg/server"
 	"luizalabs-technical-test/pkg/shutdown"
 
@@ -27,6 +28,7 @@ func main() {
 
 	runnapp := func() {
 		srv := server.NewGinServer()
+		srv.SetupMiddleware(cors.Middleware())
 		srv.SetupHandlers("v1", dependencies.Load()...)
 
 		err := srv.Run(":8080")
