@@ -15,6 +15,95 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/login": {
+            "post": {
+                "description": "Authenticates the user with the provided credentials and returns a JWT token.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Authenticate user and return a JWT token",
+                "parameters": [
+                    {
+                        "description": "User credentials",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.PostLoginPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Token generated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/auth.swagAuthenticateUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/server.APIErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/server.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "description": "Registers a new user with the provided information.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Register a new user",
+                "parameters": [
+                    {
+                        "description": "User registration data",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.PostRegisterPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User successfully registered"
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/server.APIErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/server.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/address/{zip-code}": {
             "get": {
                 "description": "Get address details using a provided ZIP code. Returns a structured response with address data or error information.",
@@ -84,6 +173,39 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "auth.PostLoginPayload": {
+            "type": "object",
+            "required": [
+                "email",
+                "password_hash"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password_hash": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.PostRegisterPayload": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.swagAuthenticateUserResponse": {
+            "type": "object"
+        },
         "health.swagHealthResponse": {
             "type": "object"
         },
