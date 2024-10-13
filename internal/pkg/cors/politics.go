@@ -1,6 +1,7 @@
 package cors
 
 import (
+	"luizalabs-technical-test/pkg/server"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -28,4 +29,20 @@ func Middleware() gin.HandlerFunc {
 		}
 		c.Next()
 	}
+}
+
+// RouteSettings configures the Gin router to handle cases where a resource isn't found.
+func RouteSettings(g *gin.Engine) {
+	g.NoRoute(func(c *gin.Context) {
+		c.AbortWithStatusJSON(http.StatusNotFound, server.APIErrorResponse{
+			Code:  "ERR_NO_ROUTE",
+			Error: "A rota solicitada não foi encontrada. Por favor, verifique a URL e tente novamente.",
+		})
+	})
+	g.NoMethod(func(c *gin.Context) {
+		c.AbortWithStatusJSON(http.StatusMethodNotAllowed, server.APIErrorResponse{
+			Code:  "ERR_NO_METHOD",
+			Error: "O método solicitado não é permitido para esta rota. Por favor, verifique os métodos permitidos e tente novamente.",
+		})
+	})
 }

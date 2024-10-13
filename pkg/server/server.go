@@ -7,6 +7,7 @@ import (
 // GinServerImp interface defines the methods required for a server.
 type GinServerImp interface {
 	Run(addr string) error
+	SetupCustom(configureHandlers func(router *gin.Engine))
 	SetupHandlers(version string, handlers ...func(*gin.RouterGroup))
 	SetupMiddleware(middleware ...gin.HandlerFunc)
 }
@@ -40,4 +41,9 @@ func (s *ginServer) SetupHandlers(version string, handlers ...func(*gin.RouterGr
 	for _, route := range handlers {
 		route(apiVersioning)
 	}
+}
+
+// SetupCustom accepts a function that takes *gin.Engine and configures it with custom settings.
+func (s *ginServer) SetupCustom(configureHandlers func(router *gin.Engine)) {
+	configureHandlers(s.router)
 }

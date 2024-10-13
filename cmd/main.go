@@ -28,8 +28,10 @@ func main() {
 
 	runnapp := func() {
 		srv := server.NewGinServer()
-		srv.SetupMiddleware(cors.Middleware())
+
+		srv.SetupCustom(cors.RouteSettings)
 		srv.SetupHandlers("v1", dependencies.Load()...)
+		srv.SetupMiddleware(cors.Middleware())
 
 		err := srv.Run(":8080")
 		if err != nil {
