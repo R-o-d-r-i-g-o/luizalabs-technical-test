@@ -15,26 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/custom-metrics": {
-            "get": {
-                "description": "Returns the Prometheus metrics for monitoring",
-                "produces": [
-                    "text/plain"
-                ],
-                "tags": [
-                    "metrics"
-                ],
-                "summary": "Expose Prometheus metrics",
-                "responses": {
-                    "200": {
-                        "description": "Metrics",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/address/{zip-code}": {
             "get": {
                 "description": "Get address details using a provided ZIP code. Returns a structured response with address data or error information.",
@@ -181,11 +161,34 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/health/metrics": {
+            "get": {
+                "description": "Returns the Prometheus metrics for monitoring",
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Expose Prometheus metrics",
+                "responses": {
+                    "200": {
+                        "description": "Metrics",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/health/ping": {
             "get": {
                 "description": "Responds with a \"pong\" message to indicate that the service is healthy.",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "health"
                 ],
                 "summary": "Health check",
                 "responses": {

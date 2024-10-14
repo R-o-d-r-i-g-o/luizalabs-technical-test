@@ -37,6 +37,7 @@ func (h *handler) Register(r *gin.RouterGroup) {
 //
 //	@Summary		Health check
 //	@Description	Responds with a "pong" message to indicate that the service is healthy.
+//	@Tags			health
 //	@Produce		json
 //	@Success		200	{object}	swagHealthResponse
 //	@Router			/v1/health/ping [get]
@@ -52,10 +53,10 @@ func (h *handler) health(c *gin.Context) {
 //
 //	@Summary		Expose Prometheus metrics
 //	@Description	Returns the Prometheus metrics for monitoring
-//	@Tags			metrics
+//	@Tags			health
 //	@Produce		text/plain
 //	@Success		200	{string}	string	"Metrics"
-//	@Router			/custom-metrics [get]
+//	@Router			/v1/health/metrics [get]
 func (h *handler) metricsHandler() gin.HandlerFunc {
 	return gin.WrapH(promhttp.Handler())
 }
