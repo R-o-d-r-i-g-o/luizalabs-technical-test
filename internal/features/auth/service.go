@@ -27,37 +27,46 @@ func NewService(repository RepositoryImp) ServiceImp {
 	return &service{repository}
 }
 
-// RegisterUser
+// RegisterUser registers a new user by hashing their password and saving the user in the repository.
 func (s *service) RegisterUser(user entity.User) error {
 	hashedPassword, err := crypt.HashPassword(user.Password)
 	if err != nil {
-		return err
+		return ErrInvalidCredentials.WithErr(err)
 	}
 	user.Password = hashedPassword
 
-	return s.repository.RegisterUser(user)
+	if err = s.repository.RegisterUser(user); err != nil {
+		return ErrUserAlreadyExists.WithErr(err)
+	}
+	return nil
 }
 
-// AuthenticateUser
+// AuthenticateUser attempts to authenticate a user with the provided credentials.
 func (s *service) AuthenticateUser(input AuthenticateUserInput) (string, error) {
 	user, err := s.repository.GetUser(input.ToPostLoginInputToFilter())
 	if err != nil {
-		return str.EmptyString, err
+		return str.EmptyString, ErrUserNotFound.WithErr(err)
 	}
 
 	isAutheticated := crypt.CheckPasswordHash(input.Password, user.Password)
 	if !isAutheticated {
-		return str.EmptyString, err
+		return str.EmptyString, ErrInvalidCredentials.WithErr(err)
 	}
 
-	return s.createJWTToken(*user)
+	jwt, err := s.createJWTToken(*user)
+	if err != nil {
+		return str.EmptyString, ErrFailedJWTGeneration.WithErr(err)
+	}
+
+	return jwt, nil
 }
 
+// createJWTToken generates a JWT token for the provided user.
 func (*service) createJWTToken(user entity.User) (string, error) {
 	claims := token.CustomClaims{
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour).Unix(),
-			Issuer:    "test-issuer",
+			Issuer:    "luizalabs-technical-test",
 		},
 		CustomKeys: user.ToJSONClaims(),
 	}

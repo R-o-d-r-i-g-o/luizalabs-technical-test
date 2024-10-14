@@ -49,7 +49,7 @@ func (h *handler) postRegister(c *gin.Context) {
 	var payload PostRegisterPayload
 
 	if err := c.ShouldBindJSON(&payload); err != nil {
-		c.JSON(http.StatusBadRequest, server.APIErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusBadRequest, server.APIErrorResponse{Error: ErrInvalidCredentials.Error()})
 		return
 	}
 
