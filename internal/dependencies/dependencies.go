@@ -55,7 +55,7 @@ func Load() []func(*gin.RouterGroup) {
 }
 
 func loadPostgresDepencies() *gorm.DB {
-	postgres.SetConnectionString(config.DatabaseEnv.ConnectionString)
+	postgres.SetConnectionString(config.PostgresConfig.ToPostgresDSN())
 	db, err := postgres.GetInstance()
 	if err != nil {
 		shutdown.Now()

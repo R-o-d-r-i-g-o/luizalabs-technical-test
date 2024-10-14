@@ -118,7 +118,7 @@ func (c *cacheMiddleware) createCacheKeyFromRequest(ctx *gin.Context) (string, e
 
 // GetUserHashFromTokenClaims extracts the user hash from token claims in the request context
 func (c *cacheMiddleware) getUserHashFromTokenClaims(ctx *gin.Context) (string, error) {
-	claims, err := token.ExtractTokenClaimsFromContext(ctx, config.GeneralConfigEnv.SecretAuthTokenKey)
+	claims, err := token.ExtractTokenClaimsFromContext(ctx, config.GeneralConfig.SecretAuthTokenKey)
 	if err != nil {
 		return str.EmptyString, err
 	}

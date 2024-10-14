@@ -20,6 +20,18 @@ run:
 	@echo "Starting app..."
 	$(GO) run $(MAIN)
 
+.PHONY: dev-up
+dev-up:
+	cd ./infra/docker && docker-compose -p "luizalabs-test" up
+
+.PHONY: dev-stop
+dev-stop:
+	cd ./infra/docker && docker-compose stop
+
+.PHONY: dev-down
+dev-down:
+	cd ./infra/docker && docker-compose down
+
 .PHONY: build
 build:
 	@echo "Building the application..."
