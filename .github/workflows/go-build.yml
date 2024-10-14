@@ -33,6 +33,11 @@ jobs:
           go install golang.org/x/lint/golint@latest
           golint -set_exit_status ./...
 
+      # unit test:
+      - name: Run test
+        run: |
+          go test -v -count=1 ./...
+
       # smoke test:
       - name: Run Build
         run: |

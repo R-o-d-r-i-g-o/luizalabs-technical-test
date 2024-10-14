@@ -26,6 +26,11 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
+      # unit test:
+      - name: Run test
+        run: |
+          go test -v -count=1 ./...
+
       - name: Build and Push
         id: docker_build
         uses: docker/build-push-action@v2

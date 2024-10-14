@@ -1,6 +1,22 @@
 version: "3.5"
 
 services:
+  postgres:
+    image: "postgres:14.5-alpine"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: admin
+      PGDATA: /data/postgres
+      POSTGRES_DB: "luizalabs_db"
+    volumes:
+      - ./../../.docker/postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+    networks:
+      - luiza-labs-network
+
   prometheus:
     image: prom/prometheus
     user: root
@@ -8,8 +24,8 @@ services:
     hostname: prometheus
     restart: unless-stopped
     volumes:
-      - ./../.docker/prometheus/data:/prometheus
-      - ./../prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./../../.docker/prometheus/data:/prometheus
+      - ./../../prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"

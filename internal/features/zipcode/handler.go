@@ -3,6 +3,9 @@ package zipcode
 import (
 	"luizalabs-technical-test/internal/pkg/formatter"
 	"luizalabs-technical-test/internal/pkg/validator"
+	"luizalabs-technical-test/pkg/constants/str"
+	"luizalabs-technical-test/pkg/logger"
+	"luizalabs-technical-test/pkg/middleware"
 	"luizalabs-technical-test/pkg/server"
 	"net/http"
 
@@ -20,18 +23,24 @@ type HandlerImp interface {
 
 // handler struct holds a reference to the service layer.
 type handler struct {
-	svc ServiceImp
+	svc        ServiceImp
+	cacheLayer middleware.Middleware
+	tokenLayer middleware.Middleware
 }
 
 // NewHandler creates and returns a new handler instance with the injected service.
-func NewHandler(svc ServiceImp) HandlerImp {
-	return &handler{svc}
+func NewHandler(svc ServiceImp, cacheMiddleware middleware.Middleware, tokenMiddleware middleware.Middleware) HandlerImp {
+	return &handler{
+		svc,
+		cacheMiddleware,
+		tokenMiddleware,
+	}
 }
 
-// Register sets up the route for retrieving CEP information.
+// Register sets up the route for retrieving ZipCode information.
 func (h *handler) Register(r *gin.RouterGroup) {
 	g := r.Group("/address")
-	g.GET("/:zip-code", h.getAddressByZipCode)
+	g.GET("/:zip-code", h.tokenLayer.Middleware(), h.cacheLayer.Middleware(), h.getAddressByZipCode)
 }
 
 // getAddressByZipCode handles the request to retrieve CEP information.
@@ -41,10 +50,12 @@ func (h *handler) Register(r *gin.RouterGroup) {
 //	@Tags			Address
 //	@Accept			json
 //	@Produce		json
-//	@Param			zip-code	path		string	true	"ZIP Code"
-//	@Success		200			{object}	swagGetAddressByZipCodeResponse
-//	@Failure		400			{object}	server.APIErrorResponse	"Invalid ZIP code format"
-//	@Failure		404			{object}	server.APIErrorResponse	"ZIP code not found"
+//	@Param			Authorization	header		string	true	"Authorization token"
+//	@Param			zip-code		path		string	true	"ZIP Code"
+//	@Success		200				{object}	swagGetAddressByZipCodeResponse
+//	@Success		302				{object}	swagGetAddressByZipCodeResponse	"Cached value retrieved"
+//	@Failure		400				{object}	server.APIErrorResponse			"Invalid ZIP code format"
+//	@Failure		404				{object}	server.APIErrorResponse			"ZIP code not found"
 //	@Router			/v1/address/{zip-code} [get]
 func (h *handler) getAddressByZipCode(c *gin.Context) {
 	zipCode := c.Param("zip-code")
@@ -58,13 +69,14 @@ func (h *handler) getAddressByZipCode(c *gin.Context) {
 	for {
 		response, err := h.svc.GetAddressByZipCode(zipCode)
 		if response != nil {
+			logger.Warn("Success on retrieve zip-code: " + zipCode)
 			c.JSON(http.StatusOK, swagGetAddressByZipCodeResponse{Data: *response})
 			break
 		}
 
 		zipCode = formatter.AdjustLastNonZeroDigit(zipCode)
-		if zipCode == validator.EmptyZipCodeValue {
-			// TODO: log Error here.
+		if zipCode == str.EmptyZipCodeValue {
+			logger.Error(err)
 			c.JSON(http.StatusNotFound, server.APIErrorResponse{Error: err.Error()})
 			break
 		}

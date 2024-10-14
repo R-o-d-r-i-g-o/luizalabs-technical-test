@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"luizalabs-technical-test/internal/config"
+	"luizalabs-technical-test/pkg/constants/str"
 	"luizalabs-technical-test/pkg/middleware"
 	"luizalabs-technical-test/pkg/token"
 
@@ -32,7 +33,7 @@ func (suite *TokenMiddlewareTestSuite) SetupSuite() {
 	})
 
 	// Set up config for the tests
-	config.GeneralConfigEnv.SecretAuthTokenKey = "test_secret_key"
+	config.GeneralConfig.SecretAuthTokenKey = "test_secret_key"
 }
 
 func (suite *TokenMiddlewareTestSuite) TestTokenMiddleware() {
@@ -44,7 +45,7 @@ func (suite *TokenMiddlewareTestSuite) TestTokenMiddleware() {
 	}{
 		{
 			name:         "No token provided",
-			authHeader:   "",
+			authHeader:   str.EmptyString,
 			expectedCode: http.StatusUnauthorized,
 			expectedBody: `{"error":"Unauthorized"}`,
 		},
@@ -52,7 +53,7 @@ func (suite *TokenMiddlewareTestSuite) TestTokenMiddleware() {
 			name:         "Invalid token provided",
 			authHeader:   "Bearer invalidtoken",
 			expectedCode: http.StatusUnauthorized,
-			expectedBody: `{"error":"invalid token"}`, // Adjust based on your error handling
+			expectedBody: `{"error":"invalid token"}`,
 		},
 		{
 			name:         "Valid token provided",
@@ -90,7 +91,7 @@ func (suite *TokenMiddlewareTestSuite) createValidToken() string {
 		},
 		CustomKeys: map[string]any{"foo": "bar"},
 	}
-	tokenString, _ := token.CreateToken(config.GeneralConfigEnv.SecretAuthTokenKey, claims)
+	tokenString, _ := token.CreateToken(config.GeneralConfig.SecretAuthTokenKey, claims)
 	return tokenString
 }
 

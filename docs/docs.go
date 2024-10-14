@@ -31,6 +31,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "ZIP Code",
                         "name": "zip-code",
                         "in": "path",
@@ -40,6 +47,12 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/zipcode.swagGetAddressByZipCodeResponse"
+                        }
+                    },
+                    "302": {
+                        "description": "Cached value retrieved",
                         "schema": {
                             "$ref": "#/definitions/zipcode.swagGetAddressByZipCodeResponse"
                         }
@@ -59,11 +72,123 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/auth/login": {
+            "post": {
+                "description": "Authenticates the user with the provided credentials and returns a JWT token.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Authenticate user and return a JWT token",
+                "parameters": [
+                    {
+                        "description": "User credentials",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.PostLoginPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Token generated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/auth.swagAuthenticateUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/server.APIErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/server.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/register": {
+            "post": {
+                "description": "Registers a new user with the provided information.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Register a new user",
+                "parameters": [
+                    {
+                        "description": "User registration data",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.PostRegisterPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User successfully registered"
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/server.APIErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/server.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/health/metrics": {
+            "get": {
+                "description": "Returns the Prometheus metrics for monitoring",
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Expose Prometheus metrics",
+                "responses": {
+                    "200": {
+                        "description": "Metrics",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/health/ping": {
             "get": {
                 "description": "Responds with a \"pong\" message to indicate that the service is healthy.",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "health"
                 ],
                 "summary": "Health check",
                 "responses": {
@@ -78,6 +203,39 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "auth.PostLoginPayload": {
+            "type": "object",
+            "required": [
+                "email",
+                "password_hash"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password_hash": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.PostRegisterPayload": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.swagAuthenticateUserResponse": {
+            "type": "object"
+        },
         "health.swagHealthResponse": {
             "type": "object"
         },

@@ -27,7 +27,7 @@ func (t *tokenMiddleware) Middleware() gin.HandlerFunc {
 			return
 		}
 
-		claims, err := token.ValidateToken(config.GeneralConfigEnv.SecretAuthTokenKey, tokenString)
+		claims, err := token.ValidateToken(config.GeneralConfig.SecretAuthTokenKey, tokenString)
 		if err != nil {
 			// Customize the error message for unauthorized access
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})

@@ -1,32 +1,51 @@
 package config
 
-import "luizalabs-technical-test/pkg/env"
+import (
+	"fmt"
+	"luizalabs-technical-test/pkg/env"
 
-// Variables that store server, external API, and general configuration settings
-var (
-	ServerEnv        serverConfig
-	ExternalAPIEnv   externalAPI
-	GeneralConfigEnv generalConfig
+	"github.com/joho/godotenv"
 )
 
-// LoadEnv loads environment variables into the configuration structures using "env" tags
-func LoadEnv() {
+// Variables that store server, external API, and general configuration settings.
+var (
+	ServerConfig   serverConfig
+	GeneralConfig  generalConfig
+	PostgresConfig postgresConfig
+)
+
+// init loads environment variables into the configuration structures using "env" tags.
+func init() {
 	const tagName = "env"
-	env.LoadStructWithEnvVars(tagName, &ServerEnv, &ExternalAPIEnv, &GeneralConfigEnv)
+
+	godotenv.Load(".env")
+	env.LoadStructWithEnvVars(tagName, &ServerConfig, &GeneralConfig, &PostgresConfig)
 }
 
-// Structure to load general configurations (e.g., authentication key)
+// Structure to load database configurations (connection string).
+type postgresConfig struct {
+	Host     string `env:"PG_HOST"`
+	Port     string `env:"PG_PORT"`
+	User     string `env:"PG_USER"`
+	Password string `env:"PG_PASSWORD"`
+	Database string `env:"PG_DATABASE"`
+}
+
+// Structure to load general configurations (e.g., authentication key).
 type generalConfig struct {
 	SecretAuthTokenKey string `env:"SECRET_AUTH_TOKEN_KEY"`
 }
 
-// Structure to load server configurations (port and host)
+// Structure to load server configurations (port and host).
 type serverConfig struct {
 	Port string `env:"SERVER_PORT"`
 	Host string `env:"SERVER_HOST"`
 }
 
-// Structure to load the external API URL
-type externalAPI struct {
-	URL string `env:"EXTERNAL_API"`
+// ToPostgresDSN fromats provided data into postgres db dsn.
+func (p *postgresConfig) ToPostgresDSN() string {
+	return fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%s",
+		p.Host, p.User, p.Password, p.Database, p.Port,
+	)
 }

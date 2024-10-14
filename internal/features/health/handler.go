@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 // swagHealthResponse is used to work around Swagger's lack of support for Go generics.
@@ -29,12 +30,14 @@ func NewHandler() HandlerImp {
 func (h *handler) Register(r *gin.RouterGroup) {
 	g := r.Group("/health")
 	g.GET("/ping", h.health)
+	g.GET("/metrics", h.metricsHandler())
 }
 
 // health handles the health check request, responding with a "pong" message.
 //
 //	@Summary		Health check
 //	@Description	Responds with a "pong" message to indicate that the service is healthy.
+//	@Tags			health
 //	@Produce		json
 //	@Success		200	{object}	swagHealthResponse
 //	@Router			/v1/health/ping [get]
@@ -44,4 +47,16 @@ func (h *handler) health(c *gin.Context) {
 			Message: "pong",
 		},
 	})
+}
+
+// metricsHandler serves Prometheus metrics endpoint.
+//
+//	@Summary		Expose Prometheus metrics
+//	@Description	Returns the Prometheus metrics for monitoring
+//	@Tags			health
+//	@Produce		text/plain
+//	@Success		200	{string}	string	"Metrics"
+//	@Router			/v1/health/metrics [get]
+func (h *handler) metricsHandler() gin.HandlerFunc {
+	return gin.WrapH(promhttp.Handler())
 }

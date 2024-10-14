@@ -9,8 +9,6 @@ RUN apk add --no-cache make && \
     make install-swagger-cli && \
     make refresh-swagger
 
-RUN go test ./...
-
 RUN go mod download && \
     go mod tidy && \
     go mod verify

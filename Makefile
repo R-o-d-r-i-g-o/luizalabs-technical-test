@@ -20,6 +20,18 @@ run:
 	@echo "Starting app..."
 	$(GO) run $(MAIN)
 
+.PHONY: dev-up
+dev-up:
+	@docker-compose -f ./infra/docker/docker-compose.yml up -d
+
+.PHONY: dev-stop
+dev-stop:
+	@docker-compose -f ./infra/docker/docker-compose.yml stop
+
+.PHONY: dev-down
+dev-down:
+	@docker-compose -f ./infra/docker/docker-compose.yml down
+
 .PHONY: build
 build:
 	@echo "Building the application..."
@@ -79,6 +91,9 @@ help:
 	@echo "  install              - Install Go dependencies"
 	@echo "  run                  - Run the application"
 	@echo "  build                - Build the application"
+	@echo "  dev-up               - Start all resources used by app"
+	@echo "  dev-down             - Delete all resources used by app"
+	@echo "  dev-stop             - Stop all resources used by app"
 	@echo "  test                 - Run tests with coverage"
 	@echo "  clean                - Clean up build files"
 	@echo "  help                 - Show this help message"

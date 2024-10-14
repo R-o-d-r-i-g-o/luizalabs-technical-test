@@ -10,6 +10,7 @@ import (
 
 	"luizalabs-technical-test/internal/config"
 	"luizalabs-technical-test/pkg/cache"
+	"luizalabs-technical-test/pkg/env"
 	"luizalabs-technical-test/pkg/token"
 
 	"github.com/gin-gonic/gin"
@@ -25,16 +26,16 @@ type CacheMiddlewareSuite struct {
 func (s *CacheMiddlewareSuite) SetupSuite() {
 	// Initialize the global cache manager for testing
 	os.Setenv("SECRET_AUTH_TOKEN_KEY", "test-secret")
-	config.LoadEnv()
-	cache.InitializeCacheManager(time.Minute)
-	s.cacheManager = cache.GetGlobalCacheManager()
+
+	env.LoadStructWithEnvVars("env", &config.ServerConfig, &config.GeneralConfig, &config.PostgresConfig)
+	s.cacheManager = cache.NewManager(time.Minute)
 }
 
 func (s *CacheMiddlewareSuite) TestCacheMiddleware() {
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 	secretKey := "test-secret"
-	userToken, err := token.CreateToken(secretKey, token.CustomClaims{CustomKeys: map[string]any{"user_hash": "test"}})
+	userToken, err := token.CreateToken(secretKey, token.CustomClaims{CustomKeys: map[string]any{"Email": "test"}})
 	assert.NoError(s.T(), err)
 
 	// Create an instance of the cache middleware
