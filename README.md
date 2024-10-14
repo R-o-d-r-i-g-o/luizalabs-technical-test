@@ -20,7 +20,7 @@ Para a arquitetura do projeto, utilizei a convenção da comunidade proposta no 
 
 Além disso, implementei o design pattern `singleton` e a `clean-architecture` (pela questão dos `use-cases`, e um contexto global e único), idealizada por Uncle Bob. A pasta pkg foi utilizada para adicionar camadas de segurança entre os pacotes internos e o uso de bibliotecas, evitando que essas bibliotecas fiquem fortemente acopladas à linguagem. A camada de repository atuou como uma barreira anticorrupção, prevenindo complexidades futuras relacionadas a alterações de contratos ou interfaces públicas.
 
-Mais adiantes o nível de pasta "/feature" autou na segregação de cada `use-case`
+Adicionalmente, o nível de pasta "/feature" auxiliou na segregação de cada use-case, permitindo retornar mensagens de erro padronizadas (por meio do pacote de error handling) que facilitaram o rastreamento das ocorrências. Essa estrutura também possibilitou a separação das models e das estruturas utilizadas em cada camada da aplicação.
 
 ### Testes e validações
 
