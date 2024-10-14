@@ -44,7 +44,7 @@ func (h *handler) Register(r *gin.RouterGroup) {
 //	@Success		201		"User successfully registered"
 //	@Failure		400		{object}	server.APIErrorResponse	"Bad request"
 //	@Failure		500		{object}	server.APIErrorResponse	"Internal server error"
-//	@Router			/register [post]
+//	@Router			/v1/auth/register [post]
 func (h *handler) postRegister(c *gin.Context) {
 	var payload PostRegisterPayload
 
@@ -72,7 +72,7 @@ func (h *handler) postRegister(c *gin.Context) {
 //	@Success		202		{object}	swagAuthenticateUserResponse	"Token generated successfully"
 //	@Failure		400		{object}	server.APIErrorResponse			"Bad request"
 //	@Failure		401		{object}	server.APIErrorResponse			"Unauthorized"
-//	@Router			/login [post]
+//	@Router			/v1/auth/login [post]
 func (h *handler) postLogin(c *gin.Context) {
 	var payload PostLoginPayload
 

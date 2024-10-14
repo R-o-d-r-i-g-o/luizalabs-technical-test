@@ -18,8 +18,13 @@ type CustomClaims struct {
 	CustomKeys map[string]any `json:"custom_claims,omitempty"`
 }
 
-// ClaimsHeaderName is the key used to store token claims in the Gin context.
-const ClaimsHeaderName = "claims"
+const (
+	// ClaimsHeaderName is the key used to store token claims in the Gin context.
+	ClaimsHeaderName = "claims"
+
+	// BearerTokenParts defines the length between auth attribute and JWT token when the string is splitted.
+	BearerTokenParts = 2
+)
 
 // CreateToken generates a JWT token using a secret key and custom claims.
 func CreateToken(secretKey string, claims CustomClaims) (string, error) {
@@ -80,5 +85,14 @@ func ExtractBearerToken(r *http.Request) string {
 		return str.EmptyString
 	}
 
-	return strings.Split(authHeader, str.EmptySpace)[1]
+	authAttributes := strings.Split(authHeader, str.EmptySpace)
+	if len(authAttributes) == 0 {
+		return str.EmptyString
+	}
+
+	if len(authAttributes) < BearerTokenParts {
+		return authAttributes[0]
+	}
+
+	return authAttributes[1]
 }

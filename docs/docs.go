@@ -15,7 +15,84 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/login": {
+        "/custom-metrics": {
+            "get": {
+                "description": "Returns the Prometheus metrics for monitoring",
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "metrics"
+                ],
+                "summary": "Expose Prometheus metrics",
+                "responses": {
+                    "200": {
+                        "description": "Metrics",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/address/{zip-code}": {
+            "get": {
+                "description": "Get address details using a provided ZIP code. Returns a structured response with address data or error information.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Address"
+                ],
+                "summary": "Retrieve CEP information by ZIP code",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ZIP Code",
+                        "name": "zip-code",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/zipcode.swagGetAddressByZipCodeResponse"
+                        }
+                    },
+                    "302": {
+                        "description": "Cached value retrieved",
+                        "schema": {
+                            "$ref": "#/definitions/zipcode.swagGetAddressByZipCodeResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ZIP code format",
+                        "schema": {
+                            "$ref": "#/definitions/server.APIErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "ZIP code not found",
+                        "schema": {
+                            "$ref": "#/definitions/server.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/login": {
             "post": {
                 "description": "Authenticates the user with the provided credentials and returns a JWT token.",
                 "consumes": [
@@ -61,7 +138,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/register": {
+        "/v1/auth/register": {
             "post": {
                 "description": "Registers a new user with the provided information.",
                 "consumes": [
@@ -97,56 +174,6 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/server.APIErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/address/{zip-code}": {
-            "get": {
-                "description": "Get address details using a provided ZIP code. Returns a structured response with address data or error information.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Address"
-                ],
-                "summary": "Retrieve CEP information by ZIP code",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ZIP Code",
-                        "name": "zip-code",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/zipcode.swagGetAddressByZipCodeResponse"
-                        }
-                    },
-                    "302": {
-                        "description": "Cached value retrieved",
-                        "schema": {
-                            "$ref": "#/definitions/zipcode.swagGetAddressByZipCodeResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid ZIP code format",
-                        "schema": {
-                            "$ref": "#/definitions/server.APIErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "ZIP code not found",
                         "schema": {
                             "$ref": "#/definitions/server.APIErrorResponse"
                         }

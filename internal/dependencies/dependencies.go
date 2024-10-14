@@ -29,6 +29,7 @@ func Load() []func(*gin.RouterGroup) {
 
 	cacheManager := cache.NewManager(cleanupInterval)
 	cacheMiddleware := middleware.NewCacheMiddleware(cacheManager)
+	tokenMiddleware := middleware.NewTokenMiddleware()
 
 	// auth feature
 	authRep := auth.NewRepository(db)
@@ -38,7 +39,7 @@ func Load() []func(*gin.RouterGroup) {
 	// zipcode feature
 	zipCodeRep := zipcode.NewRepository(httpClient)
 	zipCodeSrv := zipcode.NewService(zipCodeRep)
-	zipCodeHandler := zipcode.NewHandler(zipCodeSrv, cacheMiddleware)
+	zipCodeHandler := zipcode.NewHandler(zipCodeSrv, cacheMiddleware, tokenMiddleware)
 
 	// health feature
 	healthHandler := health.NewHandler()

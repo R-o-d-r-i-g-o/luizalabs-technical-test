@@ -17,8 +17,8 @@ type PostLoginPayload struct {
 // AuthenticateUserInput represents the input structure in
 // service layer for autentication of user login.
 type AuthenticateUserInput struct {
-	Email        string `json:"email"`
-	PasswordHash string `json:"password_hash"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 // AuthenticateUserResponse represents the response structure
@@ -43,12 +43,12 @@ func (p *PostRegisterPayload) ToUserEntity() entity.User {
 // ToPostLoginPayloadToInput maps PostLoginPayload to PostLoginInput.
 func (p *PostLoginPayload) ToPostLoginPayloadToInput() AuthenticateUserInput {
 	return AuthenticateUserInput{
-		Email:        p.Email,
-		PasswordHash: p.PasswordHash,
+		Email:    p.Email,
+		Password: p.PasswordHash,
 	}
 }
 
-// MapPostLoginInputToFilter maps PostLoginInput to GetUserFilter.
+// ToPostLoginInputToFilter maps PostLoginInput to GetUserFilter.
 func (i *AuthenticateUserInput) ToPostLoginInputToFilter() GetUserFilter {
 	return GetUserFilter{
 		Email: i.Email,

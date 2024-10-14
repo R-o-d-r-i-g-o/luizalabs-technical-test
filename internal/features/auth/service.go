@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"luizalabs-technical-test/internal/config"
 	"luizalabs-technical-test/internal/pkg/entity"
 	"luizalabs-technical-test/pkg/constants/str"
 	"luizalabs-technical-test/pkg/crypt"
@@ -44,7 +45,7 @@ func (s *service) AuthenticateUser(input AuthenticateUserInput) (string, error) 
 		return str.EmptyString, err
 	}
 
-	isAutheticated := crypt.CheckPasswordHash(user.Password, input.PasswordHash)
+	isAutheticated := crypt.CheckPasswordHash(input.Password, user.Password)
 	if !isAutheticated {
 		return str.EmptyString, err
 	}
@@ -61,5 +62,5 @@ func (*service) createJWTToken(user entity.User) (string, error) {
 		CustomKeys: user.ToJSONClaims(),
 	}
 
-	return token.CreateToken("my-secret", claims)
+	return token.CreateToken(config.GeneralConfig.SecretAuthTokenKey, claims)
 }

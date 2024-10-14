@@ -22,15 +22,15 @@ run:
 
 .PHONY: dev-up
 dev-up:
-	cd ./infra/docker && docker-compose -p "luizalabs-test" up
+	@docker-compose -f ./infra/docker/docker-compose.yml up -d
 
 .PHONY: dev-stop
 dev-stop:
-	cd ./infra/docker && docker-compose stop
+	@docker-compose -f ./infra/docker/docker-compose.yml stop
 
 .PHONY: dev-down
 dev-down:
-	cd ./infra/docker && docker-compose down
+	@docker-compose -f ./infra/docker/docker-compose.yml down
 
 .PHONY: build
 build:
@@ -91,6 +91,9 @@ help:
 	@echo "  install              - Install Go dependencies"
 	@echo "  run                  - Run the application"
 	@echo "  build                - Build the application"
+	@echo "  dev-up               - Start all resources used by app"
+	@echo "  dev-down             - Delete all resources used by app"
+	@echo "  dev-stop             - Stop all resources used by app"
 	@echo "  test                 - Run tests with coverage"
 	@echo "  clean                - Clean up build files"
 	@echo "  help                 - Show this help message"

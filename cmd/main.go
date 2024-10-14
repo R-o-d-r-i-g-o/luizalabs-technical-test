@@ -33,7 +33,7 @@ func main() {
 		srv.SetupHandlers("v1", dependencies.Load()...)
 		srv.SetupMiddleware(cors.Middleware())
 
-		err := srv.Run(":8080")
+		err := srv.Run(":" + config.ServerConfig.Port)
 		if err != nil {
 			fmt.Printf("Error running server: %v\n", err)
 			shutdown.Now()

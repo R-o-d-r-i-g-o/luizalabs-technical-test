@@ -23,20 +23,22 @@ type HandlerImp interface {
 type handler struct {
 	svc        ServiceImp
 	cacheLayer middleware.Middleware
+	tokenLayer middleware.Middleware
 }
 
 // NewHandler creates and returns a new handler instance with the injected service.
-func NewHandler(svc ServiceImp, cacheMiddleware middleware.Middleware) HandlerImp {
+func NewHandler(svc ServiceImp, cacheMiddleware middleware.Middleware, tokenMiddleware middleware.Middleware) HandlerImp {
 	return &handler{
 		svc,
 		cacheMiddleware,
+		tokenMiddleware,
 	}
 }
 
 // Register sets up the route for retrieving ZipCode information.
 func (h *handler) Register(r *gin.RouterGroup) {
 	g := r.Group("/address")
-	g.GET("/:zip-code", h.cacheLayer.Middleware(), h.getAddressByZipCode)
+	g.GET("/:zip-code", h.tokenLayer.Middleware(), h.cacheLayer.Middleware(), h.getAddressByZipCode)
 }
 
 // getAddressByZipCode handles the request to retrieve CEP information.
@@ -46,11 +48,12 @@ func (h *handler) Register(r *gin.RouterGroup) {
 //	@Tags			Address
 //	@Accept			json
 //	@Produce		json
-//	@Param			zip-code	path		string	true	"ZIP Code"
-//	@Success		200			{object}	swagGetAddressByZipCodeResponse
-//	@Success		302			{object}	swagGetAddressByZipCodeResponse	"Cached value retrieved"
-//	@Failure		400			{object}	server.APIErrorResponse			"Invalid ZIP code format"
-//	@Failure		404			{object}	server.APIErrorResponse			"ZIP code not found"
+//	@Param			Authorization	header		string	true	"Authorization token"
+//	@Param			zip-code		path		string	true	"ZIP Code"
+//	@Success		200				{object}	swagGetAddressByZipCodeResponse
+//	@Success		302				{object}	swagGetAddressByZipCodeResponse	"Cached value retrieved"
+//	@Failure		400				{object}	server.APIErrorResponse			"Invalid ZIP code format"
+//	@Failure		404				{object}	server.APIErrorResponse			"ZIP code not found"
 //	@Router			/v1/address/{zip-code} [get]
 func (h *handler) getAddressByZipCode(c *gin.Context) {
 	zipCode := c.Param("zip-code")
