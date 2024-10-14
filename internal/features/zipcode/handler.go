@@ -4,6 +4,7 @@ import (
 	"luizalabs-technical-test/internal/pkg/formatter"
 	"luizalabs-technical-test/internal/pkg/validator"
 	"luizalabs-technical-test/pkg/constants/str"
+	"luizalabs-technical-test/pkg/logger"
 	"luizalabs-technical-test/pkg/middleware"
 	"luizalabs-technical-test/pkg/server"
 	"net/http"
@@ -68,13 +69,14 @@ func (h *handler) getAddressByZipCode(c *gin.Context) {
 	for {
 		response, err := h.svc.GetAddressByZipCode(zipCode)
 		if response != nil {
+			logger.Warn("Success on retrieve zip-code: " + zipCode)
 			c.JSON(http.StatusOK, swagGetAddressByZipCodeResponse{Data: *response})
 			break
 		}
 
 		zipCode = formatter.AdjustLastNonZeroDigit(zipCode)
 		if zipCode == str.EmptyZipCodeValue {
-			// TODO: log Error here.
+			logger.Error(err)
 			c.JSON(http.StatusNotFound, server.APIErrorResponse{Error: err.Error()})
 			break
 		}
