@@ -33,7 +33,7 @@ func (s *CacheMiddlewareSuite) TestCacheMiddleware() {
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 	secretKey := "test-secret"
-	userToken, err := token.CreateToken(secretKey, token.CustomClaims{CustomKeys: map[string]any{"user_hash": "test"}})
+	userToken, err := token.CreateToken(secretKey, token.CustomClaims{CustomKeys: map[string]any{"Email": "test"}})
 	assert.NoError(s.T(), err)
 
 	// Create an instance of the cache middleware
