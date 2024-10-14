@@ -10,6 +10,7 @@ import (
 
 	"luizalabs-technical-test/internal/config"
 	"luizalabs-technical-test/pkg/cache"
+	"luizalabs-technical-test/pkg/env"
 	"luizalabs-technical-test/pkg/token"
 
 	"github.com/gin-gonic/gin"
@@ -25,7 +26,8 @@ type CacheMiddlewareSuite struct {
 func (s *CacheMiddlewareSuite) SetupSuite() {
 	// Initialize the global cache manager for testing
 	os.Setenv("SECRET_AUTH_TOKEN_KEY", "test-secret")
-	config.LoadEnv()
+
+	env.LoadStructWithEnvVars("env", &config.ServerConfig, &config.GeneralConfig, &config.PostgresConfig)
 	s.cacheManager = cache.NewManager(time.Minute)
 }
 

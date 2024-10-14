@@ -3,6 +3,8 @@ package config
 import (
 	"fmt"
 	"luizalabs-technical-test/pkg/env"
+
+	"github.com/joho/godotenv"
 )
 
 // Variables that store server, external API, and general configuration settings.
@@ -12,9 +14,11 @@ var (
 	PostgresConfig postgresConfig
 )
 
-// LoadEnv loads environment variables into the configuration structures using "env" tags.
-func LoadEnv() {
+// init loads environment variables into the configuration structures using "env" tags.
+func init() {
 	const tagName = "env"
+
+	godotenv.Load(".env")
 	env.LoadStructWithEnvVars(tagName, &ServerConfig, &GeneralConfig, &PostgresConfig)
 }
 

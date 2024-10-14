@@ -8,14 +8,7 @@ import (
 	"luizalabs-technical-test/internal/pkg/cors"
 	"luizalabs-technical-test/pkg/server"
 	"luizalabs-technical-test/pkg/shutdown"
-
-	"github.com/joho/godotenv"
 )
-
-func init() {
-	godotenv.Load(".env")
-	config.LoadEnv()
-}
 
 func main() {
 	cleanup := func() {
