@@ -3,6 +3,7 @@ package zipcode
 import (
 	"luizalabs-technical-test/internal/pkg/formatter"
 	"luizalabs-technical-test/internal/pkg/validator"
+	"luizalabs-technical-test/pkg/constants/str"
 	"luizalabs-technical-test/pkg/middleware"
 	"luizalabs-technical-test/pkg/server"
 	"net/http"
@@ -72,7 +73,7 @@ func (h *handler) getAddressByZipCode(c *gin.Context) {
 		}
 
 		zipCode = formatter.AdjustLastNonZeroDigit(zipCode)
-		if zipCode == validator.EmptyZipCodeValue {
+		if zipCode == str.EmptyZipCodeValue {
 			// TODO: log Error here.
 			c.JSON(http.StatusNotFound, server.APIErrorResponse{Error: err.Error()})
 			break
