@@ -87,15 +87,18 @@ func (suite *ZipcodeServiceTestSuite) TestGetAddressByZipCodeMultipleAPICalls() 
 
 	suite.mockRepo.EXPECT().
 		GetAddressByZipCodeAPICep(zipCode).
-		Return(nil, mockErr)
+		Return(nil, mockErr).
+		AnyTimes()
 
 	suite.mockRepo.EXPECT().
 		GetAddressByZipCodeOpenCep(zipCode).
-		Return(nil, mockErr)
+		Return(nil, mockErr).
+		AnyTimes()
 
 	suite.mockRepo.EXPECT().
 		GetAddressByZipCodeViaCep(zipCode).
-		Return(nil, mockErr)
+		Return(nil, mockErr).
+		AnyTimes()
 
 	actual, err := suite.service.GetAddressByZipCode(zipCode)
 

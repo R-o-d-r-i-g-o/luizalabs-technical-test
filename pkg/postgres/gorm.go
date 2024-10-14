@@ -3,6 +3,7 @@ package postgres
 import (
 	"fmt"
 	"log"
+	"luizalabs-technical-test/pkg/constants/str"
 	"sync"
 
 	"gorm.io/driver/postgres"
@@ -60,7 +61,7 @@ func connect() error {
 		return nil
 	}
 
-	if connectionStr == "" {
+	if connectionStr == str.EmptyString {
 		return fmt.Errorf("connection string is not set")
 	}
 

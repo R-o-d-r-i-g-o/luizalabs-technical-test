@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"luizalabs-technical-test/internal/config"
+	"luizalabs-technical-test/pkg/constants/str"
 	"luizalabs-technical-test/pkg/middleware"
 	"luizalabs-technical-test/pkg/token"
 
@@ -44,7 +45,7 @@ func (suite *TokenMiddlewareTestSuite) TestTokenMiddleware() {
 	}{
 		{
 			name:         "No token provided",
-			authHeader:   "",
+			authHeader:   str.EmptyString,
 			expectedCode: http.StatusUnauthorized,
 			expectedBody: `{"error":"Unauthorized"}`,
 		},
@@ -52,7 +53,7 @@ func (suite *TokenMiddlewareTestSuite) TestTokenMiddleware() {
 			name:         "Invalid token provided",
 			authHeader:   "Bearer invalidtoken",
 			expectedCode: http.StatusUnauthorized,
-			expectedBody: `{"error":"invalid token"}`, // Adjust based on your error handling
+			expectedBody: `{"error":"invalid token"}`,
 		},
 		{
 			name:         "Valid token provided",
