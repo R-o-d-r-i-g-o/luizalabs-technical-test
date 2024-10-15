@@ -29,13 +29,7 @@ const (
 // CreateToken generates a JWT token using a secret key and custom claims.
 func CreateToken(secretKey string, claims CustomClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	tokenString, err := token.SignedString([]byte(secretKey))
-	if err != nil {
-		return str.EmptyString, err
-	}
-
-	return tokenString, nil
+	return token.SignedString([]byte(secretKey))
 }
 
 // ValidateToken verifies the provided token string using the secret key and returns the custom claims if valid.

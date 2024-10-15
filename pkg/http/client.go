@@ -3,7 +3,6 @@ package http
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	netHttp "net/http"
 )
 
@@ -35,11 +34,6 @@ func (c *client) FetchPublicData(url string, data interface{}) error {
 	if err != nil {
 		return fmt.Errorf("failed to fetch data from %s: %w", url, err)
 	}
-	defer func(Body io.ReadCloser) {
-		if closeErr := Body.Close(); closeErr != nil {
-			fmt.Printf("Error closing response body: %s\n", closeErr.Error())
-		}
-	}(response.Body)
-
+	defer response.Body.Close()
 	return json.NewDecoder(response.Body).Decode(data)
 }
