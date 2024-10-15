@@ -2,7 +2,6 @@ package auth_test
 
 import (
 	"bytes"
-	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -54,7 +53,7 @@ func (s *TestSuite) TestPostLogin_BadRequestError() {
 func (s *TestSuite) TestPostLogin_UnauthorizedError() {
 	s.mockSvc.EXPECT().
 		AuthenticateUser(gomock.Any()).
-		Return("", errors.New("raise error")).
+		Return("", &auth.ErrInvalidCredentials).
 		Times(1)
 
 	w := httptest.NewRecorder()
@@ -97,7 +96,7 @@ func (s *TestSuite) TestPostRegister_BadRequestError() {
 func (s *TestSuite) TestPostRegister_InternalServerError() {
 	s.mockSvc.EXPECT().
 		RegisterUser(gomock.Any()).
-		Return(errors.New("raise error")).
+		Return(&auth.ErrUserAlreadyExists).
 		Times(1)
 
 	w := httptest.NewRecorder()

@@ -14,6 +14,32 @@ type ErrorSuite struct {
 	suite.Suite
 }
 
+// TestCodeStr tests the implementation of the CodeStr method.
+func (suite *ErrorSuite) TestCodeStr() {
+	tests := []struct {
+		name         string
+		customErr    *Error
+		expectedCode string
+	}{
+		{
+			name:         "With valid code",
+			customErr:    &Error{Code: "400", Message: "custom error"},
+			expectedCode: "400",
+		},
+		{
+			name:         "With empty code",
+			customErr:    &Error{Code: "", Message: "custom error"},
+			expectedCode: "",
+		},
+	}
+
+	for _, tt := range tests {
+		suite.Run(tt.name, func() {
+			assert.Equal(suite.T(), tt.expectedCode, tt.customErr.CodeStr())
+		})
+	}
+}
+
 // TestError tests the implementation of the Error method.
 func (suite *ErrorSuite) TestError() {
 	tests := []struct {
