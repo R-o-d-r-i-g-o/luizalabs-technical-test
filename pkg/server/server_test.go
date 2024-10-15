@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -84,6 +85,18 @@ func (suite *ServerTestSuite) TestSetupCustom() {
 
 	assert.Equal(suite.T(), http.StatusOK, w.Code)
 	assert.JSONEq(suite.T(), `{"message": "custom endpoint"}`, w.Body.String())
+}
+
+// TestRun tests the server running function.
+func (suite *ServerTestSuite) TestRun() {
+	var err error
+
+	go func() {
+		err = suite.server.Run(":8080")
+
+	}()
+	time.Sleep(100 * time.Millisecond)
+	assert.NoError(suite.T(), err)
 }
 
 // TestMain runs the test suite.

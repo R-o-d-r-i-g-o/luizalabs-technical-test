@@ -86,10 +86,6 @@ func ExtractBearerToken(r *http.Request) string {
 	}
 
 	authAttributes := strings.Split(authHeader, str.EmptySpace)
-	if len(authAttributes) == 0 {
-		return str.EmptyString
-	}
-
 	if len(authAttributes) < BearerTokenParts {
 		return authAttributes[0]
 	}

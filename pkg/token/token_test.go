@@ -1,7 +1,9 @@
 package token_test
 
 import (
+	"luizalabs-technical-test/pkg/constants/str"
 	"luizalabs-technical-test/pkg/token"
+	"net/http"
 	"testing"
 	"time"
 
@@ -117,6 +119,55 @@ func (suite *TokenTestSuite) TestValidateTokenWithExpiredToken() {
 
 	// Ensure that the error is of the expected type
 	assert.Contains(suite.T(), err.Error(), "token is expired")
+}
+
+func (suite *TokenTestSuite) TestExtractBearerToken() {
+	tests := []struct {
+		name          string
+		authHeader    string
+		expectedToken string
+	}{
+		{
+			name:          "Valid Bearer Token",
+			authHeader:    "Bearer test_token",
+			expectedToken: "test_token",
+		},
+		{
+			name:          "Bearer Token Without Prefix",
+			authHeader:    "test_token",
+			expectedToken: "test_token",
+		},
+		{
+			name:          "Empty Authorization Header",
+			authHeader:    str.EmptyString,
+			expectedToken: str.EmptyString,
+		},
+		{
+			name:          "Invalid Authorization Format",
+			authHeader:    "InvalidHeader test_token",
+			expectedToken: "test_token",
+		},
+		{
+			name:          "Only Bearer Without Token",
+			authHeader:    "Bearer ",
+			expectedToken: str.EmptyString,
+		},
+		{
+			name:          "Spaces Only",
+			authHeader:    str.EmptySpace,
+			expectedToken: str.EmptyString,
+		},
+	}
+
+	for _, tt := range tests {
+		suite.Run(tt.name, func() {
+			req, _ := http.NewRequest(http.MethodGet, "/", nil)
+			req.Header.Set("Authorization", tt.authHeader)
+
+			token := token.ExtractBearerToken(req)
+			assert.Equal(suite.T(), tt.expectedToken, token)
+		})
+	}
 }
 
 func TestTokenSuite(t *testing.T) {
