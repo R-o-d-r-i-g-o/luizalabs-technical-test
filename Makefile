@@ -1,7 +1,7 @@
 
 # VARIABLES
 GO=go
-PKG=$(shell go list ./... | grep -v /mocks) # remove cover tracing in mock files.
+PKG=$(shell go list ./... | grep -v /mock)
 MAIN=./cmd/main.go
 COVERAGE_OUT=coverage.out
 COVERAGE_HTML=coverage.html
@@ -40,7 +40,7 @@ build:
 .PHONY: test
 test:
 	@echo "Running tests with coverage..."
-	$(GO) test -coverprofile=$(COVERAGE_OUT) $(PKG)
+	$(GO) test -count=1 $(PKG) -cover -coverprofile=$(COVERAGE_OUT) $(EXCLUDE_MOCKS)
 	$(GO) tool cover -html=$(COVERAGE_OUT) -o $(COVERAGE_HTML)
 
 .PHONY: clean

@@ -16,14 +16,32 @@ func TestMiddleware(t *testing.T) {
 		c.String(http.StatusOK, "OK")
 	})
 
-	// Test preflight request
-	t.Run("Preflight Request", func(t *testing.T) {
-		req, _ := http.NewRequest(http.MethodOptions, "/test", nil)
-		w := httptest.NewRecorder()
-		router.ServeHTTP(w, req)
+	tests := []struct {
+		name         string
+		method       string
+		expectedCode int
+	}{
+		{
+			name:         "Preflight Request",
+			method:       http.MethodOptions,
+			expectedCode: http.StatusNoContent,
+		},
+		{
+			name:         "Successful Request",
+			method:       http.MethodGet,
+			expectedCode: http.StatusOK,
+		},
+	}
 
-		assert.Equal(t, http.StatusNoContent, w.Code, "Expected status code 204 for OPTIONS request")
-	})
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req, _ := http.NewRequest(tt.method, "/test", nil)
+			w := httptest.NewRecorder()
+			router.ServeHTTP(w, req)
+
+			assert.Equal(t, tt.expectedCode, w.Code)
+		})
+	}
 }
 
 func TestRouteSettings(t *testing.T) {
@@ -35,19 +53,39 @@ func TestRouteSettings(t *testing.T) {
 	})
 	RouteSettings(router)
 
-	t.Run("Non-Existing Route", func(t *testing.T) {
-		req, _ := http.NewRequest(http.MethodGet, "/non-existing", nil)
-		w := httptest.NewRecorder()
-		router.ServeHTTP(w, req)
+	tests := []struct {
+		name         string
+		method       string
+		route        string
+		expectedCode int
+	}{
+		{
+			name:         "Non-Existing Route",
+			method:       http.MethodGet,
+			route:        "/non-existing",
+			expectedCode: http.StatusNotFound,
+		},
+		{
+			name:         "Method Not Allowed",
+			method:       http.MethodPost,
+			route:        "/",
+			expectedCode: http.StatusMethodNotAllowed,
+		},
+		{
+			name:         "Successful Request",
+			method:       http.MethodGet,
+			route:        "/",
+			expectedCode: http.StatusOK,
+		},
+	}
 
-		assert.Equal(t, http.StatusNotFound, w.Code, "Expected status code 404 for non-existing route")
-	})
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req, _ := http.NewRequest(tt.method, tt.route, nil)
+			w := httptest.NewRecorder()
+			router.ServeHTTP(w, req)
 
-	t.Run("Method Not Allowed", func(t *testing.T) {
-		req, _ := http.NewRequest(http.MethodPost, "/", nil)
-		w := httptest.NewRecorder()
-		router.ServeHTTP(w, req)
-
-		assert.Equal(t, http.StatusMethodNotAllowed, w.Code, "Expected status code 405 for method not allowed")
-	})
+			assert.Equal(t, tt.expectedCode, w.Code)
+		})
+	}
 }

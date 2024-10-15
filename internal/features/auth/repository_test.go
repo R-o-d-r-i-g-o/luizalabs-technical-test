@@ -65,11 +65,15 @@ func (s *AuthRepositoryTestSuite) TestRegisterUser() {
 
 	user := entity.User{
 		Email: "test@example.com",
-		// Add other required fields...
 	}
 
+	// Attempt to register the user for the first time; it should succeed.
 	err := repo.RegisterUser(user)
 	s.NoError(err)
+
+	// Attempt to register the same user again; this should fail due to the unique index constraint.
+	err = repo.RegisterUser(user)
+	s.Error(err)
 
 	// Verify that the user was created
 	fetchedUser, err := repo.GetUser(GetUserFilter{Email: user.Email})
