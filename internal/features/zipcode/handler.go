@@ -60,7 +60,8 @@ func (h *handler) getAddressByZipCode(c *gin.Context) {
 	zipCode := c.Param("zip-code")
 	zipCode = formatter.StripNonNumericCharacters(zipCode)
 
-	if isAccepted := validator.ValidateZipCode(zipCode); !isAccepted {
+	isAccepted := validator.ValidateZipCode(zipCode)
+	if !isAccepted {
 		c.JSON(http.StatusBadRequest, server.APIErrorResponse{Error: ErrZipCodeNotFormatted.Error()})
 		return
 	}
@@ -75,7 +76,6 @@ func (h *handler) getAddressByZipCode(c *gin.Context) {
 
 		zipCode = formatter.AdjustLastNonZeroDigit(zipCode)
 		if zipCode == str.EmptyZipCodeValue {
-			logger.Error(err)
 			c.JSON(http.StatusNotFound, server.APIErrorResponse{
 				Error: ErrZipCodeInvalid.WithErr(err).Error(),
 			})

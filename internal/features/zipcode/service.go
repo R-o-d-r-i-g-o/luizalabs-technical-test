@@ -1,7 +1,6 @@
 package zipcode
 
 import (
-	"luizalabs-technical-test/pkg/logger"
 	"time"
 )
 
@@ -37,8 +36,7 @@ func (s *service) GetAddressByZipCode(zipCode string) (*GetAddressByZipCodeRespo
 			response, err := call(zipCode)
 			if err != nil {
 				// Note: Do not return in cases of instability or errors, to avoid stopping the request flow.
-				ErrZipCodeNotFound.WithErr(err)
-				logger.Error(err)
+				ErrZipCodeNotFound.WithErr(err).Error()
 				return
 			}
 			responseChan <- response

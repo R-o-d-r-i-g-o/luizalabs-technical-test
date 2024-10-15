@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"luizalabs-technical-test/pkg/logger"
 	"luizalabs-technical-test/pkg/server"
 	"net/http"
 
@@ -78,14 +77,12 @@ func (h *handler) postLogin(c *gin.Context) {
 	var payload PostLoginPayload
 
 	if err := c.ShouldBindJSON(&payload); err != nil {
-		logger.Error(err)
 		c.JSON(http.StatusBadRequest, server.APIErrorResponse{Error: err.Error()})
 		return
 	}
 
 	jwt, err := h.service.AuthenticateUser(payload.ToPostLoginPayloadToInput())
 	if err != nil {
-		logger.Error(err)
 		c.JSON(http.StatusUnauthorized, server.APIErrorResponse{Error: err.Error()})
 		return
 	}

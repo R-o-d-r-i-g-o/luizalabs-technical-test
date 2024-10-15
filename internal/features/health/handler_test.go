@@ -39,6 +39,6 @@ func TestHealthHandler(t *testing.T) {
 		router.ServeHTTP(recorder, req)
 
 		assert.Equal(t, http.StatusOK, recorder.Code)
-		assert.Contains(t, recorder.Body.String(), "# HELP") // Check for Prometheus metrics output
+		assert.Contains(t, recorder.Body.String(), "# HELP")
 	})
 }

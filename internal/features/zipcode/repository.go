@@ -46,7 +46,7 @@ func (i *repository) GetAddressByZipCodeViaCep(zipCode string) (*GetAddressByZip
 // using the BrasilAPI and returns it as a unified response.
 func (i *repository) GetAddressByZipCodeBrasilAPI(zipCode string) (*GetAddressByZipCodeUnifiedResponse, error) {
 	parsedURL := fmt.Sprintf("https://brasilapi.com.br/api/cep/v2/%s", zipCode)
-	data := new(ViaCepResponse)
+	data := new(BrasilAPIResponse)
 
 	if err := i.httpClient.FetchPublicData(parsedURL, data); err != nil {
 		return nil, err
