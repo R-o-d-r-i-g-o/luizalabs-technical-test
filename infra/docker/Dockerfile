@@ -5,9 +5,8 @@ WORKDIR /src
 
 COPY . .
 
-RUN apk add --no-cache make && \
-    make install-swagger-cli && \
-    make refresh-swagger
+RUN go install github.com/swaggo/swag/cmd/swag@v1.16.3 && \
+    swag init -g cmd/main.go
 
 RUN go mod download && \
     go mod tidy && \
