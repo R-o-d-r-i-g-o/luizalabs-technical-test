@@ -52,14 +52,14 @@ clean:
 .PHONY: install-swagger-cli
 install-swagger-cli:
 	@echo "Running install swagger..."
-	$(GO) install github.com/swaggo/swag/cmd/swag@latest
+	$(GO) install github.com/swaggo/swag/cmd/swag@v1.16.3
 
 .PHONY: refresh-swagger
 refresh-swagger:
 	@echo "Running swagger lint..."
 	@swag fmt
 	@echo "Running swagger docs..."
-	@swag init -q -g cmd/main.go
+	@swag init -g cmd/main.go --parseDependency
 
 .PHONY: install-mock-cli
 install-mock-cli:
