@@ -14,6 +14,12 @@ A linguagem Go foi escolhida para realizar buscas concorrentes devido ao uso de 
 
 Se um CEP válido não retornar um endereço, o sistema substituirá, um a um, os dígitos da direita para a esquerda por zero até encontrar um endereço correspondente, aumentando a ordem de grandeza. Por exemplo, ao fornecer o CEP 14570006 e não obter resultado, o sistema tentará variações como 14570000, 14500000 e assim por diante, até ter sucesso, retornando as informações da cidade de Buritizal neste caso.
 
+![alt text](assets/grafana.png)
+
+![alt text](assets/prometheus.png)
+
+![alt text](assets/swagger-docs.png)
+
 ### Arquitetura e documentação
 
 Para a arquitetura do projeto, utilizei a convenção da comunidade proposta no repositório https://github.com/golang-standards/project-layout. Essa mesma abordagem é utilizada em grandes projetos (como Kubernetes) para manter um padrão, além de empregar técnicas já validadas por pesquisas de benchmark.
@@ -45,6 +51,33 @@ Em seguida, adicione um arquivo chamado `.env` na raiz do projeto, listando valo
 \*\*Obs.: o fetch das dependencias já está embarcado no próprio comando `make`. Não sendo necessário executá-lo à parte.
 
 Acessando o caminho `http://localhost:<SERVER_PORT>/v1/docs/index.html` conseguirá ver a documentação das rotas a serem usadas via swagger. Lá teram rotas que medem as métricas da aplicação por meio da integração com `grafana` e `prometheus` fora alguma rotas de health próprias da aplicação para verificação da sua saúde. Mais adiante, serão vistas ainda rotas para autenticação de usuário e verificação de cep.
+
+| Command               | Description                               |
+| --------------------- | ----------------------------------------- |
+| **project**           |                                           |
+| `all`                 | Install dependencies                      |
+| `install`             | Install Go dependencies                   |
+| `build`               | Build the application                     |
+| `run`                 | Run the application                       |
+| `test`                | Run tests with coverage                   |
+| `clean`               | Clean up build files                      |
+| `help`                | Show help message                         |
+|                       |                                           |
+| **Development**       |                                           |
+| `dev-up`              | Start all resources used by the app       |
+| `dev-stop`            | Stop all resources used by the app        |
+| `dev-down`            | Delete all resources used by the app      |
+|                       |                                           |
+| **Swagger**           |                                           |
+| `install-swagger-cli` | Install Swagger CLI globally              |
+| `refresh-swagger`     | Refresh Swagger documentation             |
+|                       |                                           |
+| **Mocking**           |                                           |
+| `install-mock-cli`    | Install mockgen CLI globally              |
+| `run-mock`            | Generate/upgrade mock files automatically |
+|                       |                                           |
+| **Kubernetes**        |                                           |
+| `run-kubernetes`      | Deploy Kubernetes infrastructure          |
 
 ## 2 - Como funcionam as requisições HTTP entre o Client e o Server:
 
