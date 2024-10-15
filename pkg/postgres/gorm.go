@@ -3,7 +3,6 @@ package postgres
 import (
 	"fmt"
 	"log"
-	"luizalabs-technical-test/pkg/constants/str"
 	"sync"
 
 	"gorm.io/driver/postgres"
@@ -61,16 +60,9 @@ func connect() error {
 		return nil
 	}
 
-	if connectionStr == str.EmptyString {
-		return fmt.Errorf("connection string is not set")
-	}
-
 	var err error
 	instance, err = open(connectionStr)
-	if err != nil {
-		return fmt.Errorf("error getting DB instance: %w", err)
-	}
-	return nil
+	return err
 }
 
 // open creates a new GORM database connection using the given DSN.

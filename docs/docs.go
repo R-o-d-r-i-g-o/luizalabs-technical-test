@@ -38,6 +38,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "Cache control directive (e.g., 'no-cache')",
+                        "name": "X-Cache-Control",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
                         "description": "ZIP Code",
                         "name": "zip-code",
                         "in": "path",
@@ -47,12 +53,6 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/internal_features_zipcode.swagGetAddressByZipCodeResponse"
-                        }
-                    },
-                    "302": {
-                        "description": "Cached value retrieved",
                         "schema": {
                             "$ref": "#/definitions/internal_features_zipcode.swagGetAddressByZipCodeResponse"
                         }

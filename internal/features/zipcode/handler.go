@@ -51,10 +51,11 @@ func (h *handler) Register(r *gin.RouterGroup) {
 //	@Accept			json
 //	@Produce		json
 //	@Param			Authorization	header		string	true	"Authorization token"
+//	@Param			X-Cache-Control	header		string	false	"Cache control directive (e.g., 'no-cache')"
 //	@Param			zip-code		path		string	true	"ZIP Code"
 //	@Success		200				{object}	swagGetAddressByZipCodeResponse
-//	@Failure		400				{object}	server.APIErrorResponse			"Invalid ZIP code format"
-//	@Failure		404				{object}	server.APIErrorResponse			"ZIP code not found"
+//	@Failure		400				{object}	server.APIErrorResponse	"Invalid ZIP code format"
+//	@Failure		404				{object}	server.APIErrorResponse	"ZIP code not found"
 //	@Router			/v1/address/{zip-code} [get]
 func (h *handler) getAddressByZipCode(c *gin.Context) {
 	zipCode := c.Param("zip-code")
