@@ -77,7 +77,9 @@ func (h *handler) getAddressByZipCode(c *gin.Context) {
 		zipCode = formatter.AdjustLastNonZeroDigit(zipCode)
 		if zipCode == str.EmptyZipCodeValue {
 			logger.Error(err)
-			c.JSON(http.StatusNotFound, server.APIErrorResponse{Error: err.Error()})
+			c.JSON(http.StatusNotFound, server.APIErrorResponse{
+				Error: ErrZipCodeInvalid.WithErr(err).Error(),
+			})
 			break
 		}
 	}

@@ -7,6 +7,7 @@ const (
 	ErrCodeTimeoutExcid        = "ERR_GET_ZIPCODE_TIMEOUT"   // retrive zip code data failed.
 	ErrCodeZipCodeNotFormatted = "ERR_ZIPCODE_NOT_FORMATTED" // zip code not formatted.
 	ErrCodeZipCodeNotFound     = "ERR_ZIPCODE_NOT_FOUND"     // zip code not found.
+	ErrCodeZipCodeInvalid      = "ERR_ZIPCODE_INVALID"       // zip code invalid.
 )
 
 var (
@@ -26,5 +27,11 @@ var (
 	ErrZipCodeNotFound = errors.Error{
 		Code:    ErrCodeZipCodeNotFound,
 		Message: "O CEP solicitado não foi encontrado. Verifique se o número está correto ou tente outro CEP.",
+	}
+
+	// ErrZipCodeInvalid indicates an invalid zip code, prompting the user to check and try again.
+	ErrZipCodeInvalid = errors.Error{
+		Code:    ErrCodeZipCodeInvalid,
+		Message: "CEP inválido", // Note: Do not change this message; it is required for third-party evaluation.
 	}
 )

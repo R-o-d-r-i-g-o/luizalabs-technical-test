@@ -1,7 +1,7 @@
 
 # VARIABLES
 GO=go
-PKG=./...
+PKG=$(shell go list ./... | grep -v /mocks) # remove cover tracing in mock files.
 MAIN=./cmd/main.go
 COVERAGE_OUT=coverage.out
 COVERAGE_HTML=coverage.html
@@ -72,6 +72,12 @@ run-mock:
 	@mockgen -source="internal/features/zipcode/repository.go" -destination="internal/features/zipcode/mock/repository.go" -package="mock"
 	@mockgen -source="internal/features/zipcode/service.go"    -destination="internal/features/zipcode/mock/service.go"    -package="mock"
 	@mockgen -source="internal/features/zipcode/handler.go"    -destination="internal/features/zipcode/mock/handler.go"    -package="mock"
+
+	@echo "Creating mock files for auth use-case..."
+	@mockgen -source="internal/features/auth/repository.go" -destination="internal/features/auth/mock/repository.go" -package="mock"
+	@mockgen -source="internal/features/auth/service.go"    -destination="internal/features/auth/mock/service.go"    -package="mock"
+	@mockgen -source="internal/features/auth/handler.go"    -destination="internal/features/auth/mock/handler.go"    -package="mock"
+
 
 	@echo "Creating mock files for swagger use-case..."
 	@mockgen -source="internal/features/swagger/handler.go"    -destination="internal/features/swagger/mock/handler.go"    -package="mock"
