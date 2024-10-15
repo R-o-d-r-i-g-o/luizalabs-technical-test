@@ -4,21 +4,21 @@ import "luizalabs-technical-test/internal/pkg/entity"
 
 // PostRegisterPayload represents the payload for register a user in database.
 type PostRegisterPayload struct {
-	Email    string `json:"email"    binding:"required"`
+	Email    string `json:"email"    binding:"required,email"`
 	Password string `json:"password" binding:"required"`
 }
 
 // PostLoginPayload represents the payload for user login requests.
 type PostLoginPayload struct {
-	Email        string `json:"email"         binding:"required"`
-	PasswordHash string `json:"password_hash" binding:"required"`
+	Email    string `json:"email"    binding:"required,email"`
+	Password string `json:"password" binding:"required"`
 }
 
 // AuthenticateUserInput represents the input structure in
 // service layer for autentication of user login.
 type AuthenticateUserInput struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    string
+	Password string
 }
 
 // AuthenticateUserResponse represents the response structure
@@ -29,7 +29,7 @@ type AuthenticateUserResponse struct {
 
 // GetUserFilter represents the filter criteria for querying users.
 type GetUserFilter struct {
-	Email string `json:"email"`
+	Email string
 }
 
 // ToUserEntity converts the PostRegisterPayload to a User database entity.
@@ -44,7 +44,7 @@ func (p *PostRegisterPayload) ToUserEntity() entity.User {
 func (p *PostLoginPayload) ToPostLoginPayloadToInput() AuthenticateUserInput {
 	return AuthenticateUserInput{
 		Email:    p.Email,
-		Password: p.PasswordHash,
+		Password: p.Password,
 	}
 }
 

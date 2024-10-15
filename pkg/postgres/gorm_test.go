@@ -84,8 +84,15 @@ func (suite *PostgresTestSuite) TestMigrate() {
 }
 
 func (suite *PostgresTestSuite) TestClose() {
+	var didPanic bool
+	defer func() {
+		if r := recover(); r != nil {
+			didPanic = true
+		}
+	}()
+
 	postgres.Close()
-	// No specific assertion, but ensure it does not panic
+	assert.False(suite.T(), didPanic)
 }
 
 func TestPostgresTestSuite(t *testing.T) {

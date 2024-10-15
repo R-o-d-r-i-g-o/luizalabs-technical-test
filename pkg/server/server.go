@@ -19,7 +19,10 @@ type ginServer struct {
 
 // NewGinServer creates a new instance of the Gin server.
 func NewGinServer() GinServerImp {
-	return &ginServer{router: gin.Default()}
+	router := gin.Default()
+	router.HandleMethodNotAllowed = true
+
+	return &ginServer{router: router}
 }
 
 // Run starts the server on the specified address.

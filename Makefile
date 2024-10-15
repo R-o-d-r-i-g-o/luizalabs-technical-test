@@ -1,7 +1,7 @@
 
 # VARIABLES
 GO=go
-PKG=./...
+PKG=$(shell go list ./... | grep -v /mock)
 MAIN=./cmd/main.go
 COVERAGE_OUT=coverage.out
 COVERAGE_HTML=coverage.html
@@ -40,7 +40,7 @@ build:
 .PHONY: test
 test:
 	@echo "Running tests with coverage..."
-	$(GO) test -coverprofile=$(COVERAGE_OUT) $(PKG)
+	$(GO) test -count=1 $(PKG) -cover -coverprofile=$(COVERAGE_OUT) $(EXCLUDE_MOCKS)
 	$(GO) tool cover -html=$(COVERAGE_OUT) -o $(COVERAGE_HTML)
 
 .PHONY: clean
@@ -52,14 +52,14 @@ clean:
 .PHONY: install-swagger-cli
 install-swagger-cli:
 	@echo "Running install swagger..."
-	$(GO) install github.com/swaggo/swag/cmd/swag@latest
+	$(GO) install github.com/swaggo/swag/cmd/swag@v1.16.3
 
 .PHONY: refresh-swagger
 refresh-swagger:
 	@echo "Running swagger lint..."
 	@swag fmt
 	@echo "Running swagger docs..."
-	@swag init -q -g cmd/main.go
+	@swag init -g cmd/main.go --parseDependency
 
 .PHONY: install-mock-cli
 install-mock-cli:
@@ -73,12 +73,24 @@ run-mock:
 	@mockgen -source="internal/features/zipcode/service.go"    -destination="internal/features/zipcode/mock/service.go"    -package="mock"
 	@mockgen -source="internal/features/zipcode/handler.go"    -destination="internal/features/zipcode/mock/handler.go"    -package="mock"
 
+	@echo "Creating mock files for auth use-case..."
+	@mockgen -source="internal/features/auth/repository.go" -destination="internal/features/auth/mock/repository.go" -package="mock"
+	@mockgen -source="internal/features/auth/service.go"    -destination="internal/features/auth/mock/service.go"    -package="mock"
+	@mockgen -source="internal/features/auth/handler.go"    -destination="internal/features/auth/mock/handler.go"    -package="mock"
+
+
 	@echo "Creating mock files for swagger use-case..."
-	@mockgen -source="internal/features/swagger/handler.go"    -destination="internal/features/swagger/mock/handler.go"    -package="mock"
+	@mockgen -source="internal/features/swagger/handler.go" -destination="internal/features/swagger/mock/handler.go"    -package="mock"
 
 	@echo "Creating mock files for health use-case..."
-	@mockgen -source="internal/features/health/handler.go"     -destination="internal/features/health/mock/handler.go"     -package="mock"
+	@mockgen -source="internal/features/health/handler.go" -destination="internal/features/health/mock/handler.go"     -package="mock"
 
+	@echo "Creating mock files for middlewares internal package..."
+	@mockgen -source="internal/pkg/middleware/token_middleware.go" -destination="internal/pkg/middleware/mock/token_middleware.go" -package="mock"
+	@mockgen -source="internal/pkg/middleware/cache_middleware.go" -destination="internal/pkg/middleware/mock/cache_middleware.go" -package="mock"
+
+	@echo "Creating mock files for crypt package..."
+	@mockgen -source="pkg/crypt/password.go" -destination="pkg/crypt/mock/password.go" -package="mock"
 
 .PHONY: run-kubernets
 run-kubernets:

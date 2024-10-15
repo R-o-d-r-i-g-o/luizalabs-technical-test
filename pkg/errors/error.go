@@ -3,6 +3,7 @@ package errors
 import (
 	"errors"
 	"fmt"
+	"luizalabs-technical-test/pkg/logger"
 )
 
 // Error represents a structured error with a code, message, and wrapped error.
@@ -15,6 +16,10 @@ type Error struct {
 // Error implements the error interface, returning the error message.
 // This method ensures that only the custom error message is exposed to keep inside business rules out private and secure.
 func (e *Error) Error() string {
+	// If there is wrapped error, print it internally for future debug.
+	if e.Err != nil {
+		logger.Error(e.Err)
+	}
 	return e.Message
 }
 

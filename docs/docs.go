@@ -38,6 +38,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "Cache control directive (e.g., 'no-cache')",
+                        "name": "X-Cache-Control",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
                         "description": "ZIP Code",
                         "name": "zip-code",
                         "in": "path",
@@ -48,25 +54,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/zipcode.swagGetAddressByZipCodeResponse"
-                        }
-                    },
-                    "302": {
-                        "description": "Cached value retrieved",
-                        "schema": {
-                            "$ref": "#/definitions/zipcode.swagGetAddressByZipCodeResponse"
+                            "$ref": "#/definitions/internal_features_zipcode.swagGetAddressByZipCodeResponse"
                         }
                     },
                     "400": {
                         "description": "Invalid ZIP code format",
                         "schema": {
-                            "$ref": "#/definitions/server.APIErrorResponse"
+                            "$ref": "#/definitions/luizalabs-technical-test_pkg_server.APIErrorResponse"
                         }
                     },
                     "404": {
                         "description": "ZIP code not found",
                         "schema": {
-                            "$ref": "#/definitions/server.APIErrorResponse"
+                            "$ref": "#/definitions/luizalabs-technical-test_pkg_server.APIErrorResponse"
                         }
                     }
                 }
@@ -92,7 +92,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth.PostLoginPayload"
+                            "$ref": "#/definitions/internal_features_auth.PostLoginPayload"
                         }
                     }
                 ],
@@ -100,19 +100,19 @@ const docTemplate = `{
                     "202": {
                         "description": "Token generated successfully",
                         "schema": {
-                            "$ref": "#/definitions/auth.swagAuthenticateUserResponse"
+                            "$ref": "#/definitions/internal_features_auth.swagAuthenticateUserResponse"
                         }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/server.APIErrorResponse"
+                            "$ref": "#/definitions/luizalabs-technical-test_pkg_server.APIErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/server.APIErrorResponse"
+                            "$ref": "#/definitions/luizalabs-technical-test_pkg_server.APIErrorResponse"
                         }
                     }
                 }
@@ -138,7 +138,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth.PostRegisterPayload"
+                            "$ref": "#/definitions/internal_features_auth.PostRegisterPayload"
                         }
                     }
                 ],
@@ -149,13 +149,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/server.APIErrorResponse"
+                            "$ref": "#/definitions/luizalabs-technical-test_pkg_server.APIErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/server.APIErrorResponse"
+                            "$ref": "#/definitions/luizalabs-technical-test_pkg_server.APIErrorResponse"
                         }
                     }
                 }
@@ -195,7 +195,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/health.swagHealthResponse"
+                            "$ref": "#/definitions/internal_features_health.swagHealthResponse"
                         }
                     }
                 }
@@ -203,22 +203,15 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "auth.PostLoginPayload": {
+        "internal_features_auth.AuthenticateUserResponse": {
             "type": "object",
-            "required": [
-                "email",
-                "password_hash"
-            ],
             "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password_hash": {
+                "token": {
                     "type": "string"
                 }
             }
         },
-        "auth.PostRegisterPayload": {
+        "internal_features_auth.PostLoginPayload": {
             "type": "object",
             "required": [
                 "email",
@@ -233,13 +226,71 @@ const docTemplate = `{
                 }
             }
         },
-        "auth.swagAuthenticateUserResponse": {
-            "type": "object"
+        "internal_features_auth.PostRegisterPayload": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
         },
-        "health.swagHealthResponse": {
-            "type": "object"
+        "internal_features_auth.swagAuthenticateUserResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/internal_features_auth.AuthenticateUserResponse"
+                }
+            }
         },
-        "server.APIErrorResponse": {
+        "internal_features_health.healthResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_features_health.swagHealthResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/internal_features_health.healthResponse"
+                }
+            }
+        },
+        "internal_features_zipcode.GetAddressByZipCodeResponse": {
+            "type": "object",
+            "properties": {
+                "city": {
+                    "type": "string"
+                },
+                "neighborhood": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "street": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_features_zipcode.swagGetAddressByZipCodeResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/internal_features_zipcode.GetAddressByZipCodeResponse"
+                }
+            }
+        },
+        "luizalabs-technical-test_pkg_server.APIErrorResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -249,9 +300,6 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
-        },
-        "zipcode.swagGetAddressByZipCodeResponse": {
-            "type": "object"
         }
     }
 }`

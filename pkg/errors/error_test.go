@@ -1,41 +1,72 @@
 package errors
 
 import (
-	"errors"
 	"testing"
 
+	"errors"
+
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestError_Error(t *testing.T) {
-	// ARRANGE
-	var (
-		mockError   = "Custom error message"
-		customError = Error{
-			Code:    "E001",
-			Message: mockError,
-		}
-	)
-
-	// ACT & ASSERT
-	assert.Equal(t, mockError, customError.Error())
+// ErrorSuite defines a test suite for the error structure.
+type ErrorSuite struct {
+	suite.Suite
 }
 
-func TestError_WithErr(t *testing.T) {
-	// ARRANGE
-	var (
-		wrappedErr    = errors.New("wrapped error")
-		originalError = Error{
-			Code:    "E002",
-			Message: "Original error message",
-		}
-	)
+// TestError tests the implementation of the Error method.
+func (suite *ErrorSuite) TestError() {
+	tests := []struct {
+		name        string
+		customErr   *Error
+		expectedMsg string
+	}{
+		{
+			name:        "With wrapped error",
+			customErr:   &Error{Code: "400", Message: "custom error", Err: errors.New("internal error")},
+			expectedMsg: "custom error",
+		},
+		{
+			name:        "Without wrapped error",
+			customErr:   &Error{Code: "400", Message: "custom error"},
+			expectedMsg: "custom error",
+		},
+	}
 
-	// ACT
-	newError := originalError.WithErr(wrappedErr)
+	for _, tt := range tests {
+		suite.Run(tt.name, func() {
+			assert.Equal(suite.T(), tt.expectedMsg, tt.customErr.Error())
+		})
+	}
+}
 
-	// ASSERT
-	assert.Equal(t, originalError.Code, newError.Code)
-	assert.Equal(t, originalError.Message, newError.Message)
-	assert.Equal(t, wrappedErr, newError.Err)
+// TestWithErr tests the WithErr method.
+func (suite *ErrorSuite) TestWithErr() {
+	customErr := &Error{
+		Code:    "400",
+		Message: "custom error",
+	}
+
+	subErr := errors.New("another error")
+	newErr := customErr.WithErr(subErr)
+
+	assert.Equal(suite.T(), subErr, newErr.Err)
+}
+
+// TestWithStrErr tests the WithStrErr method.
+func (suite *ErrorSuite) TestWithStrErr() {
+	customErr := &Error{
+		Code:    "400",
+		Message: "custom error",
+	}
+
+	formattedErr := customErr.WithStrErr("formatted error: %s", "details")
+
+	assert.Equal(suite.T(), "formatted error: details", formattedErr.Err.Error())
+	assert.Equal(suite.T(), "custom error", formattedErr.Error())
+}
+
+// TestMain runs the test suite.
+func TestErrorSuite(t *testing.T) {
+	suite.Run(t, new(ErrorSuite))
 }

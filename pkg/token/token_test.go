@@ -1,11 +1,15 @@
 package token_test
 
 import (
+	"context"
+	"luizalabs-technical-test/pkg/constants/str"
 	"luizalabs-technical-test/pkg/token"
+	"net/http"
 	"testing"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -117,6 +121,114 @@ func (suite *TokenTestSuite) TestValidateTokenWithExpiredToken() {
 
 	// Ensure that the error is of the expected type
 	assert.Contains(suite.T(), err.Error(), "token is expired")
+}
+
+// Test for ExtractTokenClaimsFromContext
+func (suite *TokenTestSuite) TestExtractTokenClaimsFromContext() {
+	// Set up the gin context and token
+	secretKey := "secret_key"
+	invalidToken := "invalidToken"
+
+	tests := []struct {
+		name           string
+		mockContext    context.Context
+		expectedClaims token.CustomClaims
+		expectError    bool
+	}{
+		{
+			name:           "Failed to parse context",
+			mockContext:    context.Background(),
+			expectedClaims: token.CustomClaims{},
+			expectError:    true,
+		},
+		{
+			name:           "Token not found",
+			mockContext:    createGinContextWithToken(""),
+			expectedClaims: token.CustomClaims{},
+			expectError:    true,
+		},
+		{
+			name:           "Error during token validation",
+			mockContext:    createGinContextWithToken(invalidToken),
+			expectedClaims: token.CustomClaims{},
+			expectError:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		suite.Run(tt.name, func() {
+			claims, err := token.ExtractTokenClaimsFromContext(tt.mockContext, secretKey)
+
+			if tt.expectError {
+				assert.Error(suite.T(), err)
+			} else {
+				assert.NoError(suite.T(), err)
+				assert.Equal(suite.T(), tt.expectedClaims, claims)
+			}
+		})
+	}
+}
+
+func (suite *TokenTestSuite) TestExtractBearerToken() {
+	tests := []struct {
+		name          string
+		authHeader    string
+		expectedToken string
+	}{
+		{
+			name:          "Valid Bearer Token",
+			authHeader:    "Bearer test_token",
+			expectedToken: "test_token",
+		},
+		{
+			name:          "Bearer Token Without Prefix",
+			authHeader:    "test_token",
+			expectedToken: "test_token",
+		},
+		{
+			name:          "Empty Authorization Header",
+			authHeader:    str.EmptyString,
+			expectedToken: str.EmptyString,
+		},
+		{
+			name:          "Invalid Authorization Format",
+			authHeader:    "InvalidHeader test_token",
+			expectedToken: "test_token",
+		},
+		{
+			name:          "Only Bearer Without Token",
+			authHeader:    "Bearer ",
+			expectedToken: str.EmptyString,
+		},
+		{
+			name:          "Spaces Only",
+			authHeader:    str.EmptySpace,
+			expectedToken: str.EmptyString,
+		},
+	}
+
+	for _, tt := range tests {
+		suite.Run(tt.name, func() {
+			req, _ := http.NewRequest(http.MethodGet, "/", nil)
+			req.Header.Set("Authorization", tt.authHeader)
+
+			token := token.ExtractBearerToken(req)
+			assert.Equal(suite.T(), tt.expectedToken, token)
+		})
+	}
+}
+
+// Helper function to create a gin context with a mock request containing a bearer token
+func createGinContextWithToken(token string) context.Context {
+	ginContext := &gin.Context{
+		Request: &http.Request{
+			Header: http.Header{
+				"Authorization": []string{"Bearer " + token},
+			},
+		},
+	}
+
+	return ginContext
 }
 
 func TestTokenSuite(t *testing.T) {

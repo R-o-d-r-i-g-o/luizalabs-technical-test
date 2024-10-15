@@ -1,22 +1,20 @@
 package main
 
 import (
-	"fmt"
-
 	"luizalabs-technical-test/internal/config"
 	"luizalabs-technical-test/internal/dependencies"
 	"luizalabs-technical-test/internal/pkg/cors"
+	"luizalabs-technical-test/pkg/logger"
+	"luizalabs-technical-test/pkg/postgres"
 	"luizalabs-technical-test/pkg/server"
 	"luizalabs-technical-test/pkg/shutdown"
 )
 
 func main() {
 	cleanup := func() {
-		fmt.Println("Cleaning up resources...")
-
-		// Add pull conn. close logic here
-
-		fmt.Println("Cleanup done.")
+		logger.Warn("service stop running...")
+		postgres.Close()
+		logger.Warn("server stoped correctly.")
 	}
 
 	runnapp := func() {
@@ -25,10 +23,11 @@ func main() {
 		srv.SetupCustom(cors.RouteSettings)
 		srv.SetupHandlers("v1", dependencies.Load()...)
 		srv.SetupMiddleware(cors.Middleware())
+		logger.Warn("starting server on port: " + config.ServerConfig.Port)
 
 		err := srv.Run(":" + config.ServerConfig.Port)
 		if err != nil {
-			fmt.Printf("Error running server: %v\n", err)
+			logger.Error(err)
 			shutdown.Now()
 		}
 	}

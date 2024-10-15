@@ -1,7 +1,6 @@
 package zipcode
 
 import (
-	"luizalabs-technical-test/pkg/logger"
 	"time"
 )
 
@@ -22,7 +21,6 @@ func NewService(repository RepositoryImp) ServiceImp {
 
 // GetAddressByZipCode makes concurrent API calls to retrieve the address by zip code.
 // The first successful response is used, and errors are printed if encountered.
-// A timeout of 5 seconds is applied if none of the calls return in time returning an error.
 func (s *service) GetAddressByZipCode(zipCode string) (*GetAddressByZipCodeResponse, error) {
 	responseChan := make(chan *GetAddressByZipCodeUnifiedResponse, 1)
 
@@ -38,19 +36,20 @@ func (s *service) GetAddressByZipCode(zipCode string) (*GetAddressByZipCodeRespo
 			response, err := call(zipCode)
 			if err != nil {
 				// Note: Do not return in cases of instability or errors, to avoid stopping the request flow.
-				ErrZipCodeNotFound.WithErr(err)
-				logger.Error(err)
+				ErrZipCodeNotFound.WithErr(err).Error()
 				return
 			}
 			responseChan <- response
 		}(apiCall)
 	}
+	// Note: searchTimeout defines the maximum amount of time to wait for a successful response.
+	const searchTimeout = 300 * time.Millisecond
 
 	select {
 	case apiSuccessfulResponse := <-responseChan:
 		res := apiSuccessfulResponse.ToGetAddressByZipCodeResponse()
 		return &res, nil
-	case <-time.After(2 * time.Second):
+	case <-time.After(searchTimeout):
 		return nil, ErrTimeoutOperation.WithStrErr("timeout waiting for address retrieval")
 	}
 }

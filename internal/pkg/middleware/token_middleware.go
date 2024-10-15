@@ -10,10 +10,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// TokenMiddleware is an interface that extends the base middleware.Middleware interface.
+// It is used to define middleware logic for handling authentication tokens, enabling
+// token validation and authorization checks in the request flow.
+type TokenMiddleware interface {
+	middleware.Middleware
+}
+
 type tokenMiddleware struct{}
 
 // NewTokenMiddleware creates a new instance of tokenMiddleware, which validates tokens for authentication
-func NewTokenMiddleware() middleware.Middleware {
+func NewTokenMiddleware() TokenMiddleware {
 	return &tokenMiddleware{}
 }
 
