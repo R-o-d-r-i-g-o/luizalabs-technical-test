@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"luizalabs-technical-test/pkg/errors"
 	"luizalabs-technical-test/pkg/server"
 	"net/http"
 
@@ -49,12 +50,18 @@ func (h *handler) postRegister(c *gin.Context) {
 	var payload PostRegisterPayload
 
 	if err := c.ShouldBindJSON(&payload); err != nil {
-		c.JSON(http.StatusBadRequest, server.APIErrorResponse{Error: ErrInvalidCredentials.WithErr(err).Error()})
+		c.JSON(http.StatusBadRequest, server.APIErrorResponse{
+			Error: ErrInvalidCredentials.WithErr(err).Error(),
+			Code:  ErrInvalidCredentials.Code,
+		})
 		return
 	}
 
 	if err := h.service.RegisterUser(payload.ToUserEntity()); err != nil {
-		c.JSON(http.StatusInternalServerError, server.APIErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, server.APIErrorResponse{
+			Error: err.Error(),
+			Code:  err.(errors.ErrorImp).CodeStr(),
+		})
 		return
 	}
 
@@ -77,13 +84,19 @@ func (h *handler) postLogin(c *gin.Context) {
 	var payload PostLoginPayload
 
 	if err := c.ShouldBindJSON(&payload); err != nil {
-		c.JSON(http.StatusBadRequest, server.APIErrorResponse{Error: ErrInvalidCredentials.WithErr(err).Error()})
+		c.JSON(http.StatusBadRequest, server.APIErrorResponse{
+			Error: ErrInvalidCredentials.WithErr(err).Error(),
+			Code:  ErrInvalidCredentials.Code,
+		})
 		return
 	}
 
 	jwt, err := h.service.AuthenticateUser(payload.ToPostLoginPayloadToInput())
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, server.APIErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusUnauthorized, server.APIErrorResponse{
+			Error: err.Error(),
+			Code:  err.(errors.ErrorImp).CodeStr(),
+		})
 		return
 	}
 

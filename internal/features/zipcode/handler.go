@@ -63,7 +63,10 @@ func (h *handler) getAddressByZipCode(c *gin.Context) {
 
 	isAccepted := validator.ValidateZipCode(zipCode)
 	if !isAccepted {
-		c.JSON(http.StatusBadRequest, server.APIErrorResponse{Error: ErrZipCodeNotFormatted.Error()})
+		c.JSON(http.StatusBadRequest, server.APIErrorResponse{
+			Error: ErrZipCodeNotFormatted.Error(),
+			Code:  ErrZipCodeInvalid.Code,
+		})
 		return
 	}
 
@@ -79,6 +82,7 @@ func (h *handler) getAddressByZipCode(c *gin.Context) {
 		if zipCode == str.EmptyZipCodeValue {
 			c.JSON(http.StatusNotFound, server.APIErrorResponse{
 				Error: ErrZipCodeInvalid.WithErr(err).Error(),
+				Code:  ErrZipCodeInvalid.Code,
 			})
 			break
 		}
