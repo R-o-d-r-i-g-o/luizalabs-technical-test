@@ -1,0 +1,47 @@
+name: Auto Open Pull Request Master to Develop
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  open-pr:
+    runs-on: ubuntu-latest
+
+    env:
+      BRANCH_MASTER: main
+      BRANCH_DEV: develop
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch latest changes
+        run: git fetch origin
+
+      - name: Check for existing pull request
+        id: check-pr
+        run: |
+          PR_URL=$(gh pr list --base ${{ env.BRANCH_DEV }} --head ${{ env.BRANCH_MASTER }} --json url --jq '.[0].url')
+          echo "PR_URL=${PR_URL}" >> $GITHUB_ENV
+
+      - name: Create or update pull request
+        run: |
+          if [ -z "${{ env.PR_URL }}" ]; then
+            echo "No existing pull request found. Creating a new one."
+            gh pr create --base ${{ env.BRANCH_DEV }} --head ${{ env.BRANCH_MASTER }} \
+              --title "Merge Master into Develop" \
+              --body "This pull request is automatically created to merge changes from Master to Develop."
+          else
+            echo "Pull request already exists: ${{ env.PR_URL }}"
+            gh pr comment "${{ env.PR_URL }}" --body "New changes are pushed to master. Please review and merge."
+          fi
