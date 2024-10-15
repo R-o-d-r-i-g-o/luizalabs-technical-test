@@ -22,6 +22,14 @@ Além disso, implementei o design pattern `singleton` e a `clean-architecture` (
 
 Adicionalmente, o nível de pasta "/feature" auxiliou na segregação de cada use-case, permitindo retornar mensagens de erro padronizadas (por meio do pacote de error handling) que facilitaram o rastreamento das ocorrências. Essa estrutura também possibilitou a separação das models e das estruturas utilizadas em cada camada da aplicação.
 
+### Concorrência e Memory Management
+
+Para garantir o padrão Singleton, especialmente nas conexões com o banco de dados, utilizei a função `once.Do`. Essa função assegura que, em funções que trabalham com _lazy loading_, não ocorram condições de corrida que poderiam resultar na reinicialização de múltiplas conexões com o mesmo banco de dados. Dessa forma, mesmo que o mesmo endereço de memória seja compartilhado, não há necessidade de usar _mutex_.
+
+Para o acesso e a alteração de variáveis compartilhadas, como no caso do sistema de gerenciamento de cache local dentro do pacote `global`, utilizei um _mutex_. Isso evita que, em situações de conexões multiplexadas ou acesso simultâneo à mesma _hashtable_, ocorram leituras e gravações indesejadas.
+
+Em casos como a busca de CEP e o escalonamento de várias _goroutines_, adicionei um _channel_ para garantir o padrão FIFO. Um _channel_ é uma forma de conectar múltiplas _goroutines_ e funciona como uma lista encadeada unidirecional com _mutual exclusion_ embutido. Assim, conseguimos garantir que a regra de negócio seja respeitada: o primeiro a retornar deve ser o valor enviado para o front. Além disso, implementei um _timeout_ de 5 segundos para evitar _deadlocks_ durante a execução do código.
+
 ### Testes e validações
 
 Para garantir a eficácia dos testes, utilizei o `test-containers` para simular conexões reais com bancos de dados e validar operações, enquanto o `mockgen` foi empregado para testar a lógica das camadas de negócio. Nos testes de integração, utilizei pipelines automatizados no `postman` com o CLI do `newman` para validar a comunicação entre componentes da aplicação e realização de `testes de stress`. Já os testes unitários foram organizados em `test suites`, assegurando a manutenabilidade e organização do ambiente.
