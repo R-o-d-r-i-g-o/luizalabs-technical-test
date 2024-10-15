@@ -9,6 +9,7 @@ import (
 	"luizalabs-technical-test/internal/pkg/entity"
 	"luizalabs-technical-test/internal/pkg/middleware"
 	"luizalabs-technical-test/pkg/cache"
+	"luizalabs-technical-test/pkg/crypt"
 	"luizalabs-technical-test/pkg/http"
 	"luizalabs-technical-test/pkg/postgres"
 	"luizalabs-technical-test/pkg/shutdown"
@@ -26,6 +27,7 @@ const cleanupInterval = 1 * time.Minute
 func Load() []func(*gin.RouterGroup) {
 	db := loadPostgresDepencies()
 	httpClient := http.NewClient(&netHttp.Client{})
+	cryptHasher := crypt.NewPasswordHasher()
 
 	cacheManager := cache.NewManager(cleanupInterval)
 	cacheMiddleware := middleware.NewCacheMiddleware(cacheManager)
@@ -33,7 +35,7 @@ func Load() []func(*gin.RouterGroup) {
 
 	// auth feature
 	authRep := auth.NewRepository(db)
-	authSrv := auth.NewService(authRep)
+	authSrv := auth.NewService(authRep, cryptHasher)
 	authHandler := auth.NewHandler(authSrv)
 
 	// zipcode feature

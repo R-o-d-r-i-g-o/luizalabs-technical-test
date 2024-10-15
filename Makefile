@@ -89,6 +89,8 @@ run-mock:
 	@mockgen -source="internal/pkg/middleware/token_middleware.go" -destination="internal/pkg/middleware/mock/token_middleware.go" -package="mock"
 	@mockgen -source="internal/pkg/middleware/cache_middleware.go" -destination="internal/pkg/middleware/mock/cache_middleware.go" -package="mock"
 
+	@echo "Creating mock files for crypt package..."
+	@mockgen -source="pkg/crypt/password.go" -destination="pkg/crypt/mock/password.go" -package="mock"
 
 .PHONY: run-kubernets
 run-kubernets:

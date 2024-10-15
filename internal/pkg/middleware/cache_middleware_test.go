@@ -24,9 +24,7 @@ type CacheMiddlewareSuite struct {
 }
 
 func (s *CacheMiddlewareSuite) SetupSuite() {
-	// Initialize the global cache manager for testing
 	os.Setenv("SECRET_AUTH_TOKEN_KEY", "test-secret")
-
 	env.LoadStructWithEnvVars("env", &config.ServerConfig, &config.GeneralConfig, &config.PostgresConfig)
 	s.cacheManager = cache.NewManager(time.Minute)
 }
@@ -35,10 +33,9 @@ func (s *CacheMiddlewareSuite) TestCacheMiddleware() {
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 	secretKey := "test-secret"
-	userToken, err := token.CreateToken(secretKey, token.CustomClaims{CustomKeys: map[string]any{"Email": "test"}})
+	userToken, err := token.CreateToken(secretKey, token.CustomClaims{CustomKeys: map[string]any{"Email": "test@example.com"}})
 	assert.NoError(s.T(), err)
 
-	// Create an instance of the cache middleware
 	cacheMiddleware := NewCacheMiddleware(s.cacheManager)
 	router.Use(cacheMiddleware.Middleware())
 	router.GET("/test", func(ctx *gin.Context) {
@@ -79,7 +76,6 @@ func (s *CacheMiddlewareSuite) TestCacheMiddlewareInvalidToken() {
 	})
 
 	// Mocking an invalid token extraction
-
 	req, _ := http.NewRequest(http.MethodGet, "/test", nil)
 	recorder := httptest.NewRecorder()
 	router.ServeHTTP(recorder, req)
