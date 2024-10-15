@@ -53,7 +53,6 @@ func (h *handler) Register(r *gin.RouterGroup) {
 //	@Param			Authorization	header		string	true	"Authorization token"
 //	@Param			zip-code		path		string	true	"ZIP Code"
 //	@Success		200				{object}	swagGetAddressByZipCodeResponse
-//	@Success		302				{object}	swagGetAddressByZipCodeResponse	"Cached value retrieved"
 //	@Failure		400				{object}	server.APIErrorResponse			"Invalid ZIP code format"
 //	@Failure		404				{object}	server.APIErrorResponse			"ZIP code not found"
 //	@Router			/v1/address/{zip-code} [get]

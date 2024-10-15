@@ -53,7 +53,7 @@ func (c *cacheMiddleware) Middleware() gin.HandlerFunc {
 		}
 
 		if cache, exists := c.cacheManager.Get(cacheKey); exists {
-			ctx.AbortWithStatusJSON(http.StatusFound, c.parseCachedValue(cache))
+			ctx.AbortWithStatusJSON(http.StatusOK, c.parseCachedValue(cache))
 			return
 		}
 

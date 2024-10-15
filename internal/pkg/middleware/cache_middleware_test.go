@@ -61,7 +61,7 @@ func (s *CacheMiddlewareSuite) TestCacheMiddleware() {
 	recorder2 := httptest.NewRecorder()
 	router.ServeHTTP(recorder2, req1) // Send the same request again
 
-	assert.Equal(s.T(), http.StatusFound, recorder2.Code)
+	assert.Equal(s.T(), http.StatusOK, recorder2.Code)
 	var response2 map[string]interface{}
 	err = json.Unmarshal(recorder2.Body.Bytes(), &response2)
 	assert.NoError(s.T(), err)
