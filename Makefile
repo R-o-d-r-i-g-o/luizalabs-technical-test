@@ -80,10 +80,14 @@ run-mock:
 
 
 	@echo "Creating mock files for swagger use-case..."
-	@mockgen -source="internal/features/swagger/handler.go"    -destination="internal/features/swagger/mock/handler.go"    -package="mock"
+	@mockgen -source="internal/features/swagger/handler.go" -destination="internal/features/swagger/mock/handler.go"    -package="mock"
 
 	@echo "Creating mock files for health use-case..."
-	@mockgen -source="internal/features/health/handler.go"     -destination="internal/features/health/mock/handler.go"     -package="mock"
+	@mockgen -source="internal/features/health/handler.go" -destination="internal/features/health/mock/handler.go"     -package="mock"
+
+	@echo "Creating mock files for middlewares internal package..."
+	@mockgen -source="internal/pkg/middleware/token_middleware.go" -destination="internal/pkg/middleware/mock/token_middleware.go" -package="mock"
+	@mockgen -source="internal/pkg/middleware/cache_middleware.go" -destination="internal/pkg/middleware/mock/cache_middleware.go" -package="mock"
 
 
 .PHONY: run-kubernets

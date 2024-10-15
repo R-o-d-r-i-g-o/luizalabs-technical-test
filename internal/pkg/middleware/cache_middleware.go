@@ -23,6 +23,13 @@ const (
 	noCache             string        = "no-cache"
 )
 
+// CacheMiddleware is an interface that extends the base middleware.Middleware interface.
+// It can be used to define caching-related middleware logic, allowing flexible integration
+// of caching mechanisms in the request lifecycle.
+type CacheMiddleware interface {
+	middleware.Middleware
+}
+
 type cacheMiddleware struct {
 	cacheManager cache.Manager
 }
@@ -33,7 +40,7 @@ type cacheWriter struct {
 }
 
 // NewCacheMiddleware creates a new instance of the cache middleware
-func NewCacheMiddleware(cacheManager cache.Manager) middleware.Middleware {
+func NewCacheMiddleware(cacheManager cache.Manager) CacheMiddleware {
 	return &cacheMiddleware{cacheManager: cacheManager}
 }
 
