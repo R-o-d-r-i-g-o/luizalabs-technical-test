@@ -9,7 +9,7 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang/mock v1.6.0
 	github.com/joho/godotenv v1.5.1
-	github.com/prometheus/client_golang v1.20.4
+	github.com/prometheus/client_golang v1.20.5
 	github.com/rs/cors v1.11.1
 	github.com/rs/zerolog v1.33.0
 	github.com/stretchr/testify v1.9.0
