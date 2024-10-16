@@ -38,9 +38,9 @@ Em casos como a busca de CEP e o escalonamento de várias _goroutines_, adicione
 
 ### Testes e validações
 
-Para garantir a eficácia dos testes, utilizei o `test-containers` para simular conexões reais com bancos de dados e validar operações, enquanto o `mockgen` foi empregado para testar a lógica das camadas de negócio. Nos testes de integração, utilizei pipelines automatizados no `postman` com o CLI do `newman` para validar a comunicação entre componentes da aplicação e realização de `testes de stress`. Já os testes unitários foram organizados em `test suites`, assegurando a manutenabilidade e organização do ambiente.
+Para garantir a eficácia dos testes, utilizei o `test-containers` para simular conexões reais com bancos de dados e validar operações, enquanto o `mockgen` foi empregado para testar a lógica das camadas de negócio. Já os testes unitários foram organizados em `test suites`, assegurando a manutenabilidade e organização do ambiente.
 
-Nas pipelines de build, implementei a validação de linters, como `golint` e `staticcheck`, além do próprio build da imagem Docker, que funciona como um `teste de fumaça` e controle de qualidade interno.
+Nas pipelines de build, implementei a validação de linters, como `golint` e `staticcheck`, além do próprio build da imagem Docker, que funciona como um `teste de fumaça` e controle de qualidade interno. Para controle de manutenabilidade ao longo do tempo, também foram implementados jobs como o `dependecy-bot` para fazer a atualização periódia das dependencias do projeto assim que algum novo bump de versão (em qualquer pkg importado) é lançado.
 
 ### Como rodar o projeto
 

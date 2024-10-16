@@ -6,6 +6,14 @@ import (
 	"luizalabs-technical-test/pkg/logger"
 )
 
+// ErrorImp is an interface implements error custom methods.
+type ErrorImp interface {
+	Error() string
+	CodeStr() string
+	WithErr(err error) *Error
+	WithStrErr(format string, args ...interface{}) *Error
+}
+
 // Error represents a structured error with a code, message, and wrapped error.
 type Error struct {
 	Code    string
@@ -21,6 +29,12 @@ func (e *Error) Error() string {
 		logger.Error(e.Err)
 	}
 	return e.Message
+}
+
+// CodeStr returns the error code as a string.
+// This method is useful when you need to extract the error code.
+func (e *Error) CodeStr() string {
+	return e.Code
 }
 
 // WithErr returns a new Error instance with the provided underlying error.
